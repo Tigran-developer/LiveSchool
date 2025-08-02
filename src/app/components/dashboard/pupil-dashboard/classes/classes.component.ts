@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {LucideAngularModule} from 'lucide-angular';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -18,9 +18,8 @@ import {tap} from "rxjs";
   templateUrl: './classes.component.html',
   styleUrl: './classes.component.scss'
 })
-export class ClassesComponent {
+export class ClassesComponent implements OnInit {
 
-  allClasses: IClassDetails[]|null = null;
   viewMode: 'upcoming' | 'history' = 'upcoming';
   upcomingClasses: IClassDetails[] = [];
   completedClasses: IClassDetails[] = [];
@@ -54,11 +53,6 @@ export class ClassesComponent {
 
   joinClass(classSession: IClassDetails): void {
     if (classSession.zoomLink) window.open(classSession.zoomLink, '_blank');
-  }
-
-  formatDateTime(date: string): string {
-    return new Date(date).toLocaleDateString() + ' ' +
-      new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
   getTimeUntilClass(date: string): string {

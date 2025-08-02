@@ -13,5 +13,9 @@ function passwordMatchValidator(control: AbstractControl) {
   }
   return null;
 }
+function formatDateTime(date: string): string {
+  return new Date(date).toLocaleDateString() + ' ' +
+    new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
-export {passwordMatchValidator}
+export {passwordMatchValidator, formatDateTime}

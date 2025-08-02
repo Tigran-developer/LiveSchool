@@ -34,7 +34,7 @@
             </div>
             <div class="detail-item">
               <span class="detail-icon">📅</span>
-              <span>{{ formatDateTime(item.startTime) }}</span>
+              <span>{{ item.startTime }}</span>
             </div>
             <div class="detail-item">
               <span class="detail-icon">⏱️</span>
@@ -77,7 +77,7 @@
         <div class="history-info">
           <h4>{{ item.title }}</h4>
           <p class="teacher-name">with {{ item.teacher.firstName + ' ' + item.teacher.lastName}}</p>
-          <p class="class-date">{{ formatDateTime(item.startTime) }}</p>
+          <p class="class-date">{{ item.startTime }}</p>
         </div>
         <div class="history-actions">
           <div class="grade-display">Grade: A- ⭐</div>
