@@ -150,19 +150,19 @@
                             <div>Status</div>
                             <div>Actions</div>
                         </div>
-                        <div *ngFor="let class of classes" class="table-row">
-                            <div class="class-title">{{ class.title }}</div>
-                            <div>{{ class.teacherName }}</div>
-                            <div>{{ formatDateTime(class.date) }}</div>
-                            <div>{{ class.duration }}min</div>
+                        <div *ngFor="let item of classes" class="table-row">
+                            <div class="class-title">{{ item.title }}</div>
+                            <div>{{ item.teacher.firstName + ' ' + item.teacher.lastName}}</div>
+                            <div>{{ formatDateTime(item.startTime) }}</div>
+                            <div>{{ item.durationInMinutes }}min</div>
                             <div>
-                    <span class="status-badge" [ngClass]="'status-' + class.status">
-                      {{ class.status }}
+                    <span class="status-badge" [ngClass]="'status-' + item.status">
+                      {{ item.status }}
                     </span>
                             </div>
                             <div class="table-actions">
                                 <button class="btn-icon edit" title="Edit">✏️</button>
-                                <button class="btn-icon delete" (click)="deleteClass(class.id)" title="Delete">🗑️</button>
+                                <button class="btn-icon delete" (click)="deleteClass(item.id)" title="Delete">🗑️</button>
                             </div>
                         </div>
                     </div>

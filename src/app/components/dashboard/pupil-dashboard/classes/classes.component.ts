@@ -1,17 +1,17 @@
 import {Component, inject} from '@angular/core';
-import {BookOpen, Filter, LucideAngularModule, Search} from 'lucide-angular';
-import {IClass} from '../../../../../shared/interfaces/iClass';
-import {DataClassService} from '../../../../services/data-class.service';
-import {ClassCardComponent} from '../../../../../shared/components/class-card/class-card.component';
+import {LucideAngularModule} from 'lucide-angular';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {IClassDetails} from '../../../../../shared/interfaces/iClass-details';
+import {ActivatedRoute} from '@angular/router';
+import {DataClassService} from "../../../../services/data-class.service";
+import {tap} from "rxjs";
 
 @Component({
   selector: 'app-classes',
   standalone: true,
   imports: [
     CommonModule,
-    ClassCardComponent,
     LucideAngularModule,
     FormsModule
   ],
@@ -19,44 +19,55 @@ import {FormsModule} from '@angular/forms';
   styleUrl: './classes.component.scss'
 })
 export class ClassesComponent {
-  private classesService = inject(DataClassService);
 
-  readonly searchIcon = Search;
-  readonly bookOpenIcon = BookOpen;
-  readonly filterIcon = Filter;
+  allClasses: IClassDetails[]|null = null;
+  viewMode: 'upcoming' | 'history' = 'upcoming';
+  upcomingClasses: IClassDetails[] = [];
+  completedClasses: IClassDetails[] = [];
+  availableClasses: IClassDetails[] = [];
+  nextClass: IClassDetails | null = null;
 
-  classes: IClass[] = [];
-  filteredClasses: IClass[] = [];
-  categories: string[] = [];
-  levels: string[] = [];
+  activeRoute: string|undefined;
 
-  searchTerm: string = '';
-  selectedCategory: string = 'All';
-  selectedLevel: string = 'All';
+  private dataClassService = inject(DataClassService);
+  private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    this.classesService.getAllClasses().subscribe(items=>{
-      this.classes = items
-    });
-/*    this.categories = this.classesService.getCategories();
-    this.levels = this.classesService.getLevels();*/
-    this.filteredClasses = [...this.classes];
+    this.dataClassService.getAllClasses().pipe(
+        tap(classes => {
+              this.upcomingClasses = classes?.filter(c => c.status.toLowerCase() === 'upcoming') || [];
+              this.completedClasses = classes?.filter(c => c.status.toLowerCase() === 'completed') || [];
+              this.availableClasses = classes?.filter(c => c.status.toLowerCase() === 'upcoming') || [];
+            }
+        )
+    ).subscribe();
+
+    this.activeRoute = this.route?.routeConfig?.path
+    this.nextClass = this.upcomingClasses
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0] || null;
   }
 
-  filterClasses(): void {
-    this.filteredClasses = this.classes.filter(classItem => {
-      const matchesSearch = classItem.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        classItem.description.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        `${classItem.teacher.FirstName} ${classItem.teacher.LastName}`.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-/*      const matchesCategory = this.selectedCategory === 'All' || classItem.category === this.selectedCategory;
-      const matchesLevel = this.selectedLevel === 'All' || classItem.level === this.selectedLevel;
-
-      return matchesSearch && matchesCategory && matchesLevel;*/
-    });
+  getTotalHours(): string {
+    const totalMinutes = this.completedClasses.reduce((sum, c) => sum + c.durationInMinutes, 0);
+    return `${Math.floor(totalMinutes / 60)}h`;
   }
 
-  trackByClassId(index: number, classItem: IClass): string {
-    return classItem.id;
+  joinClass(classSession: IClassDetails): void {
+    if (classSession.zoomLink) window.open(classSession.zoomLink, '_blank');
+  }
+
+  formatDateTime(date: string): string {
+    return new Date(date).toLocaleDateString() + ' ' +
+      new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  getTimeUntilClass(date: string): string {
+    const diff = new Date(date).getTime() - new Date().getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    if (days > 0) return `In ${days} day${days > 1 ? 's' : ''}`;
+    if (hours > 0) return `In ${hours} hour${hours > 1 ? 's' : ''}`;
+    return 'Starting soon';
   }
 }

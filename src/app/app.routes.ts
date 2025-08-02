@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './components/signInSignUp/login/login.component';
 import {RegisterComponent} from './components/signInSignUp/register/register.component';
 import {ResetPasswordComponent} from './components/signInSignUp/reset-password/reset-password.component';
@@ -16,13 +16,15 @@ export const routes: Routes = [
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: 'forgot-password', component: ForgotPasswordComponent},
   {path: 'dashboard', component: MenuBarComponent},
-  { path: 'admin', component: AdminDashboardComponent },
-  { path: 'admin/:section', component: AdminDashboardComponent },
-  { path: 'teacher', component: TeacherDashboardComponent },
-  { path: 'teacher/:section', component: TeacherDashboardComponent },
-  { path: 'pupil', component: PupilDashboardComponent },
-  { path: 'pupil/classes', component: ClassesComponent },
-  { path: 'pupil/:section', component: PupilDashboardComponent },
+  {path: 'admin', component: AdminDashboardComponent},
+  {path: 'admin/:section', component: AdminDashboardComponent},
+  {path: 'teacher', component: TeacherDashboardComponent},
+  {path: 'teacher/:section', component: TeacherDashboardComponent},
+  {
+    path: 'pupil', component: PupilDashboardComponent,children: [
+      {path: 'classes', component: ClassesComponent}
+    ]
+  },
   {path: '**', redirectTo: 'login'},
 ];
 
@@ -30,4 +32,5 @@ export const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

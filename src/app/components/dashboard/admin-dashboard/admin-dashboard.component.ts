@@ -7,7 +7,7 @@ import {SidebarComponent} from '../../sidebar/sidebar.component';
 import {NotificationsComponent} from '../../notifications/notifications.component';
 import {DataService} from '../../../services/data.service';
 import {ITeacher} from '../../../../shared/interfaces/iTeacher';
-import {IClassSession} from '../../../../shared/interfaces/iClass-session';
+import {IClassDetails} from '../../../../shared/interfaces/iClass-details';
 import {ISubscriptionPlan} from '../../../../shared/interfaces/iSubscription-plan';
 
 @Component({
@@ -43,7 +43,7 @@ export class AdminDashboardComponent implements OnInit {
 
   activeRoute = this.ROUTES.Students;
   pendingTeachers: ITeacher[] = [];
-  classes: IClassSession[] = [];
+  classes: IClassDetails[] = [];
   subscriptionPlans: ISubscriptionPlan[] = [];
 
   approvedTeachers = 12;
@@ -57,12 +57,12 @@ export class AdminDashboardComponent implements OnInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe(teachers => (this.pendingTeachers = teachers));
 
-    this.dataService.classes$
+    /*this.dataService.classes$
         .pipe(takeUntil(this.destroy$))
         .subscribe(classes => {
           this.classes = classes;
           this.totalClasses = classes.length;
-        });
+        });*/
 
     this.dataService.subscriptionPlans$
         .pipe(takeUntil(this.destroy$))
@@ -85,17 +85,15 @@ export class AdminDashboardComponent implements OnInit {
 
     this.newClass.teacherName = teacherNames[this.newClass.teacherId] || '';
 
-    this.dataService.createClass({
+/*    this.dataService.createClass({
       ...this.newClass,
-      date: new Date(this.newClass.date).toString(),
-      pupilIds: [],
-      pupilNames: []
-    });
+      startTime: new Date(this.newClass.date).toString(),
+    });*/
 
     this.newClass = this.getDefaultNewClass();
   }
 
-  deleteClass(classId: number): void {
+  deleteClass(classId: string): void {
     // TODO: Replace confirm() with modal confirmation for better UX
     if (confirm('Are you sure you want to delete this class?')) {
       this.dataService.deleteClass(classId);

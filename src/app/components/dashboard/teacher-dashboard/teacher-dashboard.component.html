@@ -1,3 +1,4 @@
+<!--
 <div class="dashboard-layout">
     <app-sidebar
             [menuItems]="menuItems"
@@ -19,7 +20,7 @@
         </header>
 
         <div class="content-area">
-            <!-- Dashboard Overview -->
+            &lt;!&ndash; Dashboard Overview &ndash;&gt;
             <div *ngIf="activeRoute === '/teacher'" class="dashboard-overview fade-in">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -52,7 +53,7 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
+                &lt;!&ndash; Quick Actions &ndash;&gt;
                 <div class="quick-actions">
                     <h2>Quick Actions</h2>
                     <div class="actions-grid">
@@ -76,7 +77,7 @@
                 </div>
             </div>
 
-            <!-- Classes View -->
+            &lt;!&ndash; Classes View &ndash;&gt;
             <div *ngIf="activeRoute === '/teacher/classes'" class="classes-view fade-in">
                 <div class="view-controls">
                     <h2>My Classes</h2>
@@ -90,7 +91,7 @@
                     </div>
                 </div>
 
-                <!-- Calendar View -->
+                &lt;!&ndash; Calendar View &ndash;&gt;
                 <div *ngIf="viewMode === 'calendar'" class="calendar-view">
                     <div class="calendar-header">
                         <button class="nav-btn" (click)="previousMonth()">❮</button>
@@ -115,7 +116,7 @@
                     </div>
                 </div>
 
-                <!-- List View -->
+                &lt;!&ndash; List View &ndash;&gt;
                 <div *ngIf="viewMode === 'list'" class="list-view">
                     <div class="class-filters">
                         <button class="filter-btn" [class.active]="classFilter === 'all'" (click)="classFilter = 'all'">
@@ -167,7 +168,7 @@
                 </div>
             </div>
 
-            <!-- History View -->
+            &lt;!&ndash; History View &ndash;&gt;
             <div *ngIf="activeRoute === '/teacher/history'" class="history-view fade-in">
                 <h2>Class History</h2>
                 <div class="history-stats">
@@ -205,4 +206,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->

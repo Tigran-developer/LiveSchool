@@ -29,7 +29,6 @@ export class AppComponent {
 
   ngOnInit() {
     this.users$ = this.userService.getUsers();
-    this.classes$ = this.dataClassService.getAllClasses()
   }
 
 }

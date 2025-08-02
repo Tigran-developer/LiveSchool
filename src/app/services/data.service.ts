@@ -1,10 +1,10 @@
 import {inject, Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {IClassSession} from '../../shared/interfaces/iClass-session';
 import {ITeacher} from '../../shared/interfaces/iTeacher';
 import {ISubscriptionPlan} from '../../shared/interfaces/iSubscription-plan';
 import {INotification} from '../../shared/interfaces/iNotification';
 import {AuthService} from './auth.service';
+import {IClass} from '../../shared/interfaces/iClass';
 
 @Injectable({
   providedIn: 'root'
@@ -38,39 +38,6 @@ export class DataService {
       isApproved: false,
       avatar: 'https://images.pexels.com/photos/3184340/pexels-photo-3184340.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       createdAt: new Date('2025-01-02').toString()
-    }
-  ]);
-
-  private classesSubject = new BehaviorSubject<IClassSession[]>([
-    {
-      id: 1,
-      title: 'Advanced Calculus',
-      description: 'Deep dive into differential and integral calculus',
-      teacherId: '2',
-      teacherName: 'Emily Rodriguez',
-      pupilIds: ['4', '5'],
-      pupilNames: ['Alice Brown', 'Bob Wilson'],
-      date: new Date('2025-01-15T10:00:00').toString(),
-      duration: 60,
-      zoomLink: 'https://zoom.us/j/123456789',
-      status: 'upcoming',
-      recurring: 'weekly',
-      createdAt: new Date().toString()
-    },
-    {
-      id: 2,
-      title: 'Physics Fundamentals',
-      description: 'Introduction to basic physics concepts',
-      teacherId: '3',
-      teacherName: 'Michael Chen',
-      pupilIds: ['4'],
-      pupilNames: ['Alice Brown'],
-      date: new Date('2025-01-16T14:00:00').toString(),
-      duration: 45,
-      zoomLink: 'https://zoom.us/j/987654321',
-      status: 'upcoming',
-      recurring: 'none',
-      createdAt: new Date().toString()
     }
   ]);
 
@@ -122,7 +89,6 @@ export class DataService {
 
   // Observables
   public pendingTeachers$ = this.pendingTeachersSubject.asObservable();
-  public classes$ = this.classesSubject.asObservable();
   public subscriptionPlans$ = this.subscriptionPlansSubject.asObservable();
   public notifications$ = this.notificationsSubject.asObservable();
 
@@ -137,30 +103,13 @@ export class DataService {
     this.pendingTeachersSubject.next(teachers);
   }
 
-  createClass(classData: Partial<IClassSession>): void {
-    const newClass: IClassSession = {
-      id: Date.now(),
-      title: classData.title || '',
-      description: classData.description || '',
-      teacherId: classData.teacherId || '',
-      teacherName: classData.teacherName || '',
-      pupilIds: classData.pupilIds || [],
-      pupilNames: classData.pupilNames || [],
-      date: classData.date || new Date().toString(),
-      duration: classData.duration || 60,
-      zoomLink: classData.zoomLink || '',
-      status: 'upcoming',
-      recurring: classData.recurring || 'none',
-      createdAt: new Date().toString()
-    };
+  createClass(newClass: IClass): void {
 
-    const classes = [...this.classesSubject.value, newClass];
-    this.classesSubject.next(classes);
+    /*const classes = [...this.classesSubject.value, newClass];*/
   }
 
-  deleteClass(classId: number): void {
-    const classes = this.classesSubject.value.filter(c => c.id !== classId);
-    this.classesSubject.next(classes);
+  deleteClass(classId: string): void {
+    /*const classes = this.classesSubject.value.filter(c => c.id !== classId);*/
   }
 
   markNotificationAsRead(notificationId: number): void {

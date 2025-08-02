@@ -1,271 +1,192 @@
 <div class="dashboard-layout">
-    <app-sidebar
-            [menuItems]="menuItems"
-            [activeRoute]="activeRoute">
-    </app-sidebar>
+  <app-sidebar
+    [menuItems]="menuItems"
+    [activeRoute]="activeRoute||''">
+  </app-sidebar>
 
-    <div class="main-content">
-        <header class="header">
-            <div class="header-left">
-                <h1>Student Dashboard</h1>
-                <p>Welcome back, Sarah! Ready to learn something new today?</p>
-            </div>
-            <div class="header-right">
-                <div class="credits-display">
-                    <span class="credits-icon">🎓</span>
-                    <span class="credits-text">{{ remainingClasses }} classes left</span>
-                </div>
-                <app-notifications></app-notifications>
-                <div class="user-avatar">
-                    <span>👩‍🎓</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="content-area">
-            <!-- Dashboard Overview -->
-            <div *ngIf="activeRoute === '/pupil'" class="dashboard-overview fade-in">
-                <div class="stats-grid">
-                    <div class="stat-card upcoming-class" *ngIf="nextClass">
-                        <div class="stat-icon">📚</div>
-                        <div class="stat-content">
-                            <h3>{{ nextClass.title }}</h3>
-                            <p>Next Class: {{ formatDateTime(nextClass.date) }}</p>
-                            <button class="join-btn" (click)="joinClass(nextClass)">Join Class</button>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-content">
-                            <h3>{{ completedClasses.length }}</h3>
-                            <p>Classes Completed</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏰</div>
-                        <div class="stat-content">
-                            <h3>{{ upcomingClasses.length }}</h3>
-                            <p>Upcoming Classes</p>
-                        </div>
-                    </div>
-                    <div class="stat-card credits-card">
-                        <div class="stat-icon">💳</div>
-                        <div class="stat-content">
-                            <h3>{{ remainingClasses }}</h3>
-                            <p>Credits Remaining</p>
-                            <button class="buy-more-btn" (click)="activeRoute = '/pupil/subscription'">Buy More</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="recent-activity">
-                    <h2>Recent Activity</h2>
-                    <div class="activity-list">
-                        <div *ngFor="let activity of recentActivities" class="activity-item">
-                            <div class="activity-icon">{{ activity.icon }}</div>
-                            <div class="activity-content">
-                                <h4>{{ activity.title }}</h4>
-                                <p>{{ activity.description }}</p>
-                                <span class="activity-time">{{ activity.time }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- My Classes -->
-            <div *ngIf="activeRoute === '/pupil/classes'" class="my-classes fade-in">
-                <div class="view-controls">
-                    <h2>My Classes</h2>
-                    <div class="view-toggles">
-                        <button class="toggle-btn" [class.active]="viewMode === 'upcoming'" (click)="viewMode = 'upcoming'">
-                            📅 Upcoming
-                        </button>
-                        <button class="toggle-btn" [class.active]="viewMode === 'history'" (click)="viewMode = 'history'">
-                            📋 History
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Upcoming Classes -->
-                <div *ngIf="viewMode === 'upcoming'" class="upcoming-classes">
-                    <div *ngIf="upcomingClasses.length === 0" class="empty-state">
-                        <div class="empty-icon">📅</div>
-                        <h3>No upcoming classes</h3>
-                        <p>Browse available classes to book your next session</p>
-                        <button class="btn btn-primary" (click)="activeRoute = '/pupil/browse'">Browse Classes</button>
-                    </div>
-
-                    <div class="classes-grid">
-                        <div *ngFor="let class of upcomingClasses" class="class-card upcoming">
-                            <div class="class-header">
-                                <h3>{{ class.title }}</h3>
-                                <span class="class-status upcoming">{{ getTimeUntilClass(class.date) }}</span>
-                            </div>
-                            <div class="class-content">
-                                <p class="class-description">{{ class.description }}</p>
-                                <div class="class-details">
-                                    <div class="detail-item">
-                                        <span class="detail-icon">👨‍🏫</span>
-                                        <span>{{ class.teacherName }}</span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">📅</span>
-                                        <span>{{ formatDateTime(class.date) }}</span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-icon">⏱️</span>
-                                        <span>{{ class.duration }} minutes</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="class-actions">
-                                <button class="btn btn-primary" (click)="joinClass(class)">
-                                    🚀 Join Class
-                                </button>
-                                <button class="btn btn-secondary">
-                                    📋 Details
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Class History -->
-                <div *ngIf="viewMode === 'history'" class="class-history">
-                    <div class="history-stats">
-                        <div class="history-stat">
-                            <h4>Total Classes</h4>
-                            <div class="stat-number">{{ completedClasses.length }}</div>
-                        </div>
-                        <div class="history-stat">
-                            <h4>Hours Learned</h4>
-                            <div class="stat-number">{{ getTotalHours() }}</div>
-                        </div>
-                        <div class="history-stat">
-                            <h4>Average Grade</h4>
-                            <div class="stat-number">A- 📈</div>
-                        </div>
-                    </div>
-
-                    <div class="history-list">
-                        <div *ngFor="let class of completedClasses" class="history-item">
-                            <div class="history-info">
-                                <h4>{{ class.title }}</h4>
-                                <p class="teacher-name">with {{ class.teacherName }}</p>
-                                <p class="class-date">{{ formatDateTime(class.date) }}</p>
-                            </div>
-                            <div class="history-actions">
-                                <div class="grade-display">Grade: A- ⭐</div>
-                                <button class="btn-small">📹 Recording</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Browse Classes -->
-            <div *ngIf="activeRoute === '/pupil/browse'" class="browse-classes fade-in">
-                <h2>Available Classes</h2>
-                <div class="browse-filters">
-                    <select class="filter-select">
-                        <option>All Subjects</option>
-                        <option>Mathematics</option>
-                        <option>Physics</option>
-                        <option>Chemistry</option>
-                        <option>Biology</option>
-                    </select>
-                    <select class="filter-select">
-                        <option>All Levels</option>
-                        <option>Beginner</option>
-                        <option>Intermediate</option>
-                        <option>Advanced</option>
-                    </select>
-                </div>
-
-                <div class="available-classes">
-                    <div *ngFor="let class of availableClasses" class="available-class-card">
-                        <div class="class-info">
-                            <h3>{{ class.title }}</h3>
-                            <p class="class-description">{{ class.description }}</p>
-                            <div class="class-meta">
-                                <span class="teacher">👨‍🏫 {{ class.teacherName }}</span>
-                                <span class="duration">⏱️ {{ class.duration }} min</span>
-                                <span class="date">📅 {{ formatDateTime(class.date) }}</span>
-                            </div>
-                        </div>
-                        <div class="class-booking">
-                            <div class="class-price">1 Credit</div>
-                            <button class="btn btn-primary" [disabled]="remainingClasses <= 0" (click)="bookClass(class)">
-                                {{ remainingClasses <= 0 ? 'No Credits' : 'Book Class' }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subscription Management -->
-            <div *ngIf="activeRoute === '/pupil/subscription'" class="subscription-view fade-in">
-                <div class="current-plan">
-                    <h2>Your Current Plan</h2>
-                    <div class="plan-status">
-                        <div class="plan-info">
-                            <h3>{{ currentPlan?.name || 'Standard Plan' }}</h3>
-                            <p>{{ remainingClasses }} of {{ currentPlan?.classCount || 10 }} classes remaining</p>
-                        </div>
-                        <div class="plan-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
-                            </div>
-                            <p class="progress-text">{{ getProgressPercentage() }}% used</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="subscription-plans">
-                    <h2>Choose Your Plan</h2>
-                    <div class="plans-grid">
-                        <div *ngFor="let plan of subscriptionPlans"
-                             class="plan-card"
-                             [class.popular]="plan.popular"
-                             [class.current]="plan.id === currentPlan?.id">
-                            <div class="plan-badge" *ngIf="plan.popular">Most Popular</div>
-                            <div class="plan-header">
-                                <h3>{{ plan.name }}</h3>
-                                <div class="plan-price">
-                                    <span class="currency">$</span>
-                                    <span class="amount">{{ plan.price }}</span>
-                                </div>
-                                <div class="price-per-class">${{ (plan.price / plan.classCount).toFixed(1) }} per class</div>
-                            </div>
-                            <div class="plan-features">
-                                <div class="feature">
-                                    <span class="feature-icon">✅</span>
-                                    <span>{{ plan.classCount }} classes included</span>
-                                </div>
-                                <div class="feature">
-                                    <span class="feature-icon">✅</span>
-                                    <span>Access to all teachers</span>
-                                </div>
-                                <div class="feature">
-                                    <span class="feature-icon">✅</span>
-                                    <span>Class recordings</span>
-                                </div>
-                                <div class="feature">
-                                    <span class="feature-icon">✅</span>
-                                    <span>Priority booking</span>
-                                </div>
-                            </div>
-                            <button class="plan-btn"
-                                    [class.current-plan]="plan.id === currentPlan?.id"
-                                    (click)="selectPlan(plan)">
-                                {{ plan.id === currentPlan?.id ? 'Current Plan' : 'Select Plan' }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="main-content">
+    <header class="header">
+      @switch (activeRoute) {
+        @case ('/pupil/classes') {
+          <div class="header-left">
+            <h1>My Classes</h1>
+            <p>Welcome back, Sarah! Ready to learn something new today?</p>
+          </div>
+        }
+        @case ('/pupil/dashboard') {
+          <div class="header-left">
+            <h1>Student Dashboard</h1>
+            <p>Welcome back, Sarah! Ready to learn something new today?</p>
+          </div>
+        }
+      }
+      <div class="header-right">
+        <div class="credits-display">
+          <span class="credits-icon">🎓</span>
+          <span class="credits-text">{{ remainingClasses }} classes left</span>
         </div>
+        <app-notifications></app-notifications>
+        <div class="user-avatar">
+          <span>👩‍🎓</span>
+        </div>
+      </div>
+    </header>
+
+    <div> <!--class="content-area"-->
+      <!-- Dashboard Overview -->
+      <div *ngIf="activeRoute === '/pupil'" class="dashboard-overview fade-in">
+        <div class="stats-grid">
+          <div class="stat-card upcoming-class" *ngIf="nextClass">
+            <div class="stat-icon">📚</div>
+            <div class="stat-content">
+              <h3>{{ nextClass.title }}</h3>
+              <p>Next Class: {{ formatDateTime(nextClass.startTime) }}</p>
+              <button class="join-btn" (click)="joinClass(nextClass)">Join Class</button>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+              <h3>{{ completedClasses.length }}</h3>
+              <p>Classes Completed</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-content">
+              <h3>{{ upcomingClasses.length }}</h3>
+              <p>Upcoming Classes</p>
+            </div>
+          </div>
+          <div class="stat-card credits-card">
+            <div class="stat-icon">💳</div>
+            <div class="stat-content">
+              <h3>{{ remainingClasses }}</h3>
+              <p>Credits Remaining</p>
+              <button class="buy-more-btn" (click)="activeRoute = '/pupil/subscription'">Buy More</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+          <h2>Recent Activity</h2>
+          <div class="activity-list">
+            <div *ngFor="let activity of recentActivities" class="activity-item">
+              <div class="activity-icon">{{ activity.icon }}</div>
+              <div class="activity-content">
+                <h4>{{ activity.title }}</h4>
+                <p>{{ activity.description }}</p>
+                <span class="activity-time">{{ activity.time }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Classes -->
+      <router-outlet></router-outlet>
+      <!-- Browse Classes -->
+      <div *ngIf="activeRoute === '/pupil/browse'" class="browse-classes fade-in">
+        <h2>Available Classes</h2>
+        <div class="browse-filters">
+          <select class="filter-select">
+            <option>All Subjects</option>
+            <option>Mathematics</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+          </select>
+          <select class="filter-select">
+            <option>All Levels</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+
+        <div class="available-classes">
+          <div *ngFor="let item of availableClasses" class="available-class-card">
+            <div class="class-info">
+              <h3>{{ item.title }}</h3>
+              <p class="class-description">{{ item.description }}</p>
+              <div class="class-meta">
+                <span class="teacher">👨‍🏫 {{ item.teacher.firstName + ' ' + item.teacher.lastName }}</span>
+                <span class="duration">⏱️ {{ item.durationInMinutes }} min</span>
+                <span class="date">📅 {{ formatDateTime(item.startTime) }}</span>
+              </div>
+            </div>
+            <div class="class-booking">
+              <div class="class-price">1 Credit</div>
+              <button class="btn btn-primary" [disabled]="remainingClasses <= 0" (click)="bookClass(item)">
+                {{ remainingClasses <= 0 ? 'No Credits' : 'Book Class' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription Management -->
+      <div *ngIf="activeRoute === '/pupil/subscription'" class="subscription-view fade-in">
+        <div class="current-plan">
+          <h2>Your Current Plan</h2>
+          <div class="plan-status">
+            <div class="plan-info">
+              <h3>{{ currentPlan?.name || 'Standard Plan' }}</h3>
+              <p>{{ remainingClasses }} of {{ currentPlan?.classCount || 10 }} classes remaining</p>
+            </div>
+            <div class="plan-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+              </div>
+              <p class="progress-text">{{ getProgressPercentage() }}% used</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subscription-plans">
+          <h2>Choose Your Plan</h2>
+          <div class="plans-grid">
+            <div *ngFor="let plan of subscriptionPlans"
+                 class="plan-card"
+                 [class.popular]="plan.popular"
+                 [class.current]="plan.id === currentPlan?.id">
+              <div class="plan-badge" *ngIf="plan.popular">Most Popular</div>
+              <div class="plan-header">
+                <h3>{{ plan.name }}</h3>
+                <div class="plan-price">
+                  <span class="currency">$</span>
+                  <span class="amount">{{ plan.price }}</span>
+                </div>
+                <div class="price-per-class">${{ (plan.price / plan.classCount).toFixed(1) }} per class</div>
+              </div>
+              <div class="plan-features">
+                <div class="feature">
+                  <span class="feature-icon">✅</span>
+                  <span>{{ plan.classCount }} classes included</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">✅</span>
+                  <span>Access to all teachers</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">✅</span>
+                  <span>Class recordings</span>
+                </div>
+                <div class="feature">
+                  <span class="feature-icon">✅</span>
+                  <span>Priority booking</span>
+                </div>
+              </div>
+              <button class="plan-btn"
+                      [class.current-plan]="plan.id === currentPlan?.id"
+                      (click)="selectPlan(plan)">
+                {{ plan.id === currentPlan?.id ? 'Current Plan' : 'Select Plan' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

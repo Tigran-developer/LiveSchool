@@ -3,13 +3,13 @@ import {CommonModule} from '@angular/common';
 import {Subject} from "rxjs";
 import {SidebarComponent} from '../../sidebar/sidebar.component';
 import {NotificationsComponent} from '../../notifications/notifications.component';
-import {IClassSession} from '../../../../shared/interfaces/iClass-session';
+import {IClassDetails} from '../../../../shared/interfaces/iClass-details';
 import {DataService} from '../../../services/data.service';
 
 @Component({
   selector: 'app-teacher-dashboard',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, NotificationsComponent],
+  imports: [CommonModule],
   templateUrl: './teacher-dashboard.component.html',
   styleUrls: ['./teacher-dashboard.component.scss']
 })
@@ -23,10 +23,10 @@ export class TeacherDashboardComponent implements OnInit {
   ];
 
   activeRoute = '/teacher';
-  allClasses: IClassSession[] = [];
-  upcomingClasses: IClassSession[] = [];
-  completedClasses: IClassSession[] = [];
-  nextClass: IClassSession | null = null;
+  allClasses: IClassDetails[] = [];
+  upcomingClasses: IClassDetails[] = [];
+  completedClasses: IClassDetails[] = [];
+  nextClass: IClassDetails | null = null;
   totalStudents = 0;
 
   viewMode: 'calendar' | 'list' = 'list';
@@ -40,7 +40,7 @@ export class TeacherDashboardComponent implements OnInit {
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
-    this.dataService.classes$.subscribe(classes => {
+    /*this.dataService.classes$.subscribe(classes => {
       // Filter classes for current teacher (ID: 2 for demo)
       this.allClasses = classes.filter(c => c.teacherId === '2' || c.teacherId === '3');
       this.upcomingClasses = this.allClasses.filter(c => c.status === 'upcoming');
@@ -53,15 +53,15 @@ export class TeacherDashboardComponent implements OnInit {
       this.nextClass = sortedUpcoming.length > 0 ? sortedUpcoming[0] : null;
 
       // Calculate total unique students
-      const allStudents = new Set();
+/!*      const allStudents = new Set();
       this.allClasses.forEach(c => c.pupilIds.forEach(id => allStudents.add(id)));
-      this.totalStudents = allStudents.size;
+      this.totalStudents = allStudents.size;*!/
 
       this.generateCalendar();
-    });
+    });*/
   }
 
-  joinClass(classSession: IClassSession): void {
+  joinClass(classSession: IClassDetails): void {
     if (classSession.zoomLink) {
       window.open(classSession.zoomLink, '_blank');
     }
@@ -90,14 +90,14 @@ export class TeacherDashboardComponent implements OnInit {
     return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  getFilteredClasses(): IClassSession[] {
+  getFilteredClasses(): IClassDetails[] {
     if (this.classFilter === 'all') return this.allClasses;
     if (this.classFilter === 'upcoming') return this.upcomingClasses;
     return this.completedClasses;
   }
 
   getTotalHours(): string {
-    const totalMinutes = this.completedClasses.reduce((sum, c) => sum + c.duration, 0);
+    const totalMinutes = this.completedClasses.reduce((sum, c) => sum + c.durationInMinutes, 0);
     const hours = Math.floor(totalMinutes / 60);
     return `${hours}h`;
   }
@@ -120,7 +120,7 @@ export class TeacherDashboardComponent implements OnInit {
       currentDate.setDate(startDate.getDate() + i);
 
       const dayClasses = this.allClasses.filter(c => {
-        const classDate = new Date(c.date);
+        const classDate = new Date(c.startTime);
         return classDate.toDateString() === currentDate.toDateString();
       });
 
