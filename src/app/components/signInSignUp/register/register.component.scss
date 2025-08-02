@@ -1,0 +1,70 @@
+.register-main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  .register-card {
+    max-width: 460px;
+    background: var(--primary-white);
+    border-radius: 12px;
+    padding: 40px;
+
+    .header{
+      display: flex;
+      justify-content: center;
+      .text{
+        font-size: 22px;
+        font-weight: 500;
+        font-family: var(--secondary-font);
+      }
+    }
+
+    .body{
+      padding: 20px 0 30px 0;
+      width: 100%;
+
+      .input-container{
+        padding-top: 16px;
+        .text{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-family: var(--primary-font);
+          .hint{
+            text-decoration: none;
+            font-size: 13px;
+            color: var(--primary-grey);
+          }
+        }
+        input{
+          width: 300px;
+        }
+      }
+      .button-container{
+        padding-top: 16px;
+        font-size: 13px;
+        width: 100%;
+      }
+    }
+
+    .navigate{
+      background: var(--background-gray);
+      height: 55px;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      border-radius: 8px;
+
+      .content{
+        font-size: 13px;
+        font-weight: 400;
+        font-family: var(--primary-font);
+        .link{
+          text-decoration: none;
+          color: var(--primary-blue);
+        }
+      }
+    }
+  }
+}

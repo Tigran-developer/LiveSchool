@@ -1,0 +1,70 @@
+<div [class]="'class-card ' + 'getCategoryClass(classData.category)'">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h3>
+          {{ class.title }}
+        </h3>
+        <span [class]="'level-badge ' + 'getLevelClass(class.level)'">
+              {{ 'class.level' }}
+            </span>
+      </div>
+    </div>
+
+    <p class="description">
+      {{ class.description }}
+    </p>
+  </div>
+
+  <!-- Card Content -->
+  <div class="card-content">
+    <!-- Date and Time -->
+    <div class="info-section">
+      <lucide-icon [img]="calendarIcon" class="info-icon calendar-icon"></lucide-icon>
+      <div class="info-content">
+        <p class="info-title">
+          {{ formatDate(class.startTime) }}
+        </p>
+        <div class="info-subtitle">
+          <lucide-icon [img]="clockIcon" class="info-icon clock-icon"></lucide-icon>
+          <span>{{ class.startTime }} • {{ class.endTime }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Participants -->
+    <div class="info-section">
+      <lucide-icon [img]="usersIcon" class="info-icon users-icon"></lucide-icon>
+      <div class="info-content">
+        <p class="info-title">
+          {{ 'class.participantsCount' }} / {{ class.maxParticipants }} participants
+        </p>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="getParticipationPercentage()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher -->
+    <div class="info-section">
+      <lucide-icon [img]="userIcon" class="info-icon user-icon"></lucide-icon>
+      <div class="info-content teacher-info">
+        <p class="teacher-name">
+          {{ class.teacher.FirstName }} {{ class.teacher.LastName }}
+        </p>
+        <p class="teacher-role">{{ 'class.category' }} Instructor</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Footer -->
+  <div class="card-footer">
+    <button class="enroll-button">
+      Enroll Now
+    </button>
+  </div>
+</div>

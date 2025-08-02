@@ -1,0 +1,237 @@
+// Class card component styles
+.class-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  border-left: 4px solid;
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    transform: translateY(-4px);
+  }
+
+  // Category colors
+  &.development {
+    background: #eff6ff;
+    border-left-color: #60a5fa;
+  }
+
+  &.design {
+    background: #faf5ff;
+    border-left-color: #a78bfa;
+  }
+
+  &.data-science {
+    background: #ecfdf5;
+    border-left-color: #34d399;
+  }
+
+  &.marketing {
+    background: #fff7ed;
+    border-left-color: #fb923c;
+  }
+
+  &.ai-ml {
+    background: #ecfeff;
+    border-left-color: #22d3ee;
+  }
+
+  &.default {
+    background: #f9fafb;
+    border-left-color: #9ca3af;
+  }
+
+  .card-header {
+    padding: 1.5rem 1.5rem 1rem;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+
+      .title-section {
+        flex: 1;
+
+        h3 {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #111827;
+          margin-bottom: 0.5rem;
+          transition: color 0.2s ease;
+        }
+
+        .level-badge {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+          border: 1px solid;
+
+          &.beginner {
+            background: #dcfce7;
+            color: #166534;
+            border-color: #bbf7d0;
+          }
+
+          &.intermediate {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+          }
+
+          &.advanced {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fecaca;
+          }
+
+          &.default {
+            background: #f3f4f6;
+            color: #374151;
+            border-color: #e5e7eb;
+          }
+        }
+      }
+    }
+
+    .description {
+      color: #4b5563;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .card-content {
+    padding: 0 1.5rem 1.5rem;
+
+    .info-section {
+      display: flex;
+      align-items: center;
+      color: #374151;
+      background: #f9fafb;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+
+      .info-icon {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+
+        &.calendar-icon {
+          color: #4f46e5;
+        }
+
+        &.users-icon {
+          color: #10b981;
+        }
+
+        &.user-icon {
+          color: #7c3aed;
+        }
+
+        &.clock-icon {
+          color: #4b5563;
+          width: 0.75rem;
+          height: 0.75rem;
+          margin-right: 0.25rem;
+        }
+      }
+
+      .info-content {
+        flex: 1;
+        min-width: 0;
+
+        .info-title {
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin: 0;
+        }
+
+        .info-subtitle {
+          display: flex;
+          align-items: center;
+          margin-top: 0.25rem;
+          font-size: 0.75rem;
+          color: #4b5563;
+        }
+
+        .progress-bar {
+          width: 100%;
+          background: #e5e7eb;
+          border-radius: 9999px;
+          height: 0.5rem;
+          margin-top: 0.5rem;
+          overflow: hidden;
+
+          .progress-fill {
+            background: linear-gradient(90deg, #34d399, #10b981);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+          }
+        }
+
+        .teacher-info {
+          .teacher-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0;
+          }
+
+          .teacher-role {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: capitalize;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .card-footer {
+    padding: 0 1.5rem 1.5rem;
+
+    .enroll-button {
+      width: 100%;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      transform: translateY(0) scale(1);
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+      &:hover {
+        background: linear-gradient(135deg, #4338ca, #6d28d9);
+        transform: translateY(-1px) scale(1.05);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+
+      &:active {
+        transform: translateY(0) scale(0.98);
+      }
+    }
+  }
+
+  // Hover effect for title
+  &:hover .card-header .header-content .title-section h3 {
+    color: #4f46e5;
+  }
+}

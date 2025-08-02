@@ -1,0 +1,8 @@
+<div class="toggle-wrapper">
+  <p-toggleswitch
+    [ngModel]="value"
+    (onChange)="handleToggleChange($event)"
+    [disabled]="disabled">
+  </p-toggleswitch>
+  <label>{{label | translate}}</label>
+</div>

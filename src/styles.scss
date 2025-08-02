@@ -1,1 +1,129 @@
-/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&family=Unbounded:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import "primeicons/primeicons.css";
+@import "shared/components";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body, html{
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+:root {
+  --primary-font: "Noto Sans", sans-serif;
+  --secondary-font: "Unbounded", sans-serif;
+
+  --primary-grey: #999999;
+  --primary-white: #ffffff;
+  --primary-black: #1a2026;
+  --primary-blue: #0077ff;
+  --background-gray: #f4f5f6;
+  --light-grey: #cccccc;
+  --platinum: #ececec;
+  --red-error: #ff3f1d;
+  --main-dark: #2f3b4e;
+  --blue-gray: #1a2026;
+
+  --small-font-size: 13px;
+  --title-font-size: 22px;
+
+  --title-font-weight: 500;
+  --table-header-weight: 500;
+
+  --title-line-height: 32px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 10px;
+
+  input{
+    width: 300px;
+  };
+
+  .p-inputtext {
+    height: 36px;
+    padding: 10px;
+    margin-top: 2px;
+    box-sizing: border-box;
+    border-color: var(--light-grey) !important;
+    border-radius: 8px;
+  }
+  .p-inputtext:hover {
+    border-color: var(--main-dark) !important;
+  }
+  label{
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--primary-font);
+  }
+}
+
+.container{
+  height: calc(100vh - 80px);
+}
+.single-container{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-white);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+
+  .header{
+    padding:  24px;
+
+    .title{
+      display: flex;
+      font-family: var(--secondary-font);
+      font-weight: 500;
+      font-size: 22px;
+      color: var(--primary-black);
+      align-items: center;
+
+      .p-tag{
+        margin-left: 6px;
+      }
+    }
+
+    .filter-section{
+      display: flex;
+      padding-top: 8px;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+
+  .body{
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 50px);
+    .table-wrapper {
+      height: 100%;
+
+      .grid-wrapper {
+        min-height: 100px;
+      }
+    }
+  }
+
+  .footer{
+    padding: 24px;
+  }
+}
+
+.primary{
+  .p-button{
+    background: var(--main-dark) !important;
+    padding: 10px;
+    font-size: 16px;
+    font-family: var(--primary-font);
+    width: 100%;
+  }
+}

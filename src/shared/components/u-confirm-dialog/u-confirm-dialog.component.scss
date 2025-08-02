@@ -1,0 +1,56 @@
+:host ::ng-deep .dialog {
+  p {
+    font-size: 13px;
+  }
+
+  .p-dialog {
+    min-width: 375px !important;
+
+    .p-dialog-header {
+      .p-dialog-title {
+        color: var(--primary-black);
+      }
+
+      .p-button {
+        height: 24px;
+        width: 24px;
+        background: white;
+        color: black;
+        border: 0.5px solid var(--primary-grey);
+        border-radius: 50% !important;
+      }
+    }
+
+    .dialog-footer {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 24px;
+
+      .p-button {
+        padding: 10px 24px;
+      }
+
+      .p-button-cancel {
+        background-color: var(--primary-white);
+        color: var(--primary-black);
+        border: 1px solid var(--light-grey);
+        border-radius: 4px;
+      }
+
+      .p-button-cancel:hover {
+        background-color: var(--hover-gray);
+        border: 1px solid var(--primary-grey);
+      }
+
+      .p-button-confirm {
+        background-color: var(--red-error);
+        border: unset;
+        color: var(--primary-white);
+      }
+
+      .p-button-confirm:hover {
+        background-color: var(--red-error-hover);
+      }
+    }
+  }
+}

@@ -1,0 +1,144 @@
+<p-menu class="flex justify-between h-100" [styleClass]="expanded ? 'expanded-menu': ''">
+  @if(expanded){
+    <ng-template #start>
+      <div>
+        <div class="menu-header">
+          <div class="icon-container">
+            <img alt="U" height="31" width="130" src="../../../../assets/svg/logo.svg"/>
+            <div class="expand-icon"
+                 (click)="expanded = !expanded;
+               resetNodes({collapse: true});
+               filter$.next(''); searchValue = ''"></div>
+          </div>
+        </div>
+        <div class="menu-body">
+          <div class="tree-container">
+            <p-tree [value]="filteredBarList">
+              <ng-template pTemplate="default" let-node>
+                @let hasSelectedCh = hasSelectedChild(node);
+                <div class="c-tree-node" [class.selected-child]="hasSelectedCh"
+                     [class]="node.selected? 'selected': ''"
+                     (click)="node.children ? toggleNode(node) : onNodeSelect(node)">
+
+                  <div class="flex label-container">
+                  <span class="flex" *ngIf="node.iconPath; else emptySpace">
+                    <img alt="main" height="20" width="20" [src]="node.iconPath"/>
+                  </span>
+                    <span class="label">
+                    {{ node?.label | translate }}
+                  </span>
+                  </div>
+                  <span *ngIf="node.children" class="c-toggle-btn">
+                  <i class="pi p-tree-node-toggle-button-color"
+                     [ngClass]="node.expanded ? 'pi-chevron-up' : 'pi-chevron-down'"
+                  ></i>
+                </span>
+                </div>
+              </ng-template>
+            </p-tree>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #end>
+      <div class="profile-info" (click)="onShowProfile()">
+        <div>
+          <div class="profile-status">
+            <p>{{ currentUser?.firstname }}</p>
+          </div>
+          <div class="profile-email">
+            <p>{{ currentUser?.email }}</p>
+          </div>
+        </div>
+        <div class="c-toggle-btn">
+          <i class="pi &#45;&#45;p-tree-node-toggle-button-color"
+             [ngClass]="false ? 'pi-chevron-left' : 'pi-chevron-right'"
+          ></i>
+        </div>
+      </div>
+
+      <div class="sign-out-container" (click)="onLogout()">
+        <img src="/svg/logout-box-r-line.svg"/>
+        <p class="sign-out">{{ "SIGN_OUT" | translate }}</p>
+      </div>
+
+      <div class="version-row">
+      <span class="version-label">
+        {{ "APP_VERSION" | translate }} {{ environment.version }}
+      </span>
+      </div>
+    </ng-template>
+  } @else {
+    <ng-template #start>
+      <div>
+        <div class="menu-header">
+          <div class="icon-container">
+            <div class="expand-icon" (click)="expanded = !expanded; resetNodes({expand: true})"></div>
+          </div>
+        </div>
+        <div class="menu-body">
+          <div class="tree-container">
+            <p-tree [value]="filteredBarList">
+              <ng-template pTemplate="default" let-node>
+                @let hasSelectedCh = hasSelectedChild(node);
+                <div class="c-tree-node" [class.selected-child]="hasSelectedCh"
+                     autoHide="false"
+                     tooltipPosition="bottom"
+                     [pTooltip]="tooltipContent"
+                     [tooltipOptions]="tooltipOptions">
+                  <div class="flex label-container">
+                  <span class="flex" *ngIf="node.iconPath; else emptySpace">
+                    @if(hasSelectedCh){
+                      <img alt="main" height="20" width="20" [src]="node.hoverIconPath"/>
+                    } @else {
+                      <img alt="main" height="20" width="20" [src]="node.iconPath"/>
+                    }
+                  </span>
+                  </div>
+                </div>
+                <ng-template #tooltipContent>
+                  @if (node.children) {
+                    <div class="sidebar-tooltip">
+                      @for(chNode of node.children;track chNode){
+                        <div class="option-container"
+                             [class.selected]="chNode.selected"
+                             (click)="onNodeSelect(chNode)">
+                          <div>
+                            {{ chNode.label | translate }}
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </ng-template>
+              </ng-template>
+            </p-tree>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #end>
+      <div class="bottom-menu-wrapper">
+        <div class="sign-out-container-swap" (click)="onShowProfile()" style="margin-top: 0;">
+          <div class="logout-box-icon-wrapper">
+            <img src="/svg/user-line.svg"/>
+          </div>
+        </div>
+
+        <div class="sign-out-container-swap" (click)="onLogout()" style="margin-top: 0;">
+          <div class="logout-box-icon-wrapper">
+            <img src="/svg/logout-box-r-line.svg"/>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  }
+
+
+</p-menu>
+<ng-template #emptySpace>
+  <div class="empty-space"></div>
+</ng-template>
+

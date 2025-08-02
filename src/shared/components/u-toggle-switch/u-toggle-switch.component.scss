@@ -1,0 +1,47 @@
+:host ::ng-deep.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  input{
+    width: 0;
+    margin-left: 4px;
+  }
+  p-toggleswitch{
+    display: flex;
+    align-items: center;
+    height: 29px;
+  }
+  label{
+    padding-left: 10px;
+  }
+  .p-toggleswitch{
+    height: 21px !important;
+    width: 38px !important;
+    box-shadow: unset;
+
+    .p-toggleswitch-handle{
+      height: 16px !important;
+      width: 16px !important;
+      top: 58%;
+    }
+  }
+
+  .p-disabled {
+    opacity: 0.7;
+  }
+
+  .p-toggleswitch:not(.p-disabled):has(.p-toggleswitch-input:focus-visible) .p-toggleswitch-slider {
+    box-shadow: unset;
+    outline: var(--p-toggleswitch-focus-ring-width) var(--p-toggleswitch-focus-ring-style) var(--p-toggleswitch-focus-ring-color);
+    outline-offset: var(--p-toggleswitch-focus-ring-offset);
+  }
+  .p-toggleswitch-checked{
+    .p-toggleswitch-slider{
+      background: var(--main-dark);
+    }
+    .p-toggleswitch-handle{
+      height: 16px !important;
+      width: 16px !important;
+      left: 53% !important;
+    }
+  }
+}

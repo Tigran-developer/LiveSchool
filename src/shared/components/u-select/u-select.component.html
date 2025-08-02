@@ -1,0 +1,10 @@
+<div class="select-wrapper" [class]="styleClass" [class.invalid]="isInvalid()">
+  <p-select [placeholder]="placeholder | translate"
+            [options]="options"
+            [styleClass]="'select'"
+            [checkmark]="showCheckmark"
+            [showClear]="true"
+            [disabled]="disabled"
+            [(ngModel)]="value"
+            (onChange)="onValueChange($event.value)"/>
+</div>

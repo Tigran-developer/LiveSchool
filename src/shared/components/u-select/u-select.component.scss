@@ -1,0 +1,17 @@
+:host ::ng-deep .select-wrapper{
+  &.invalid {
+    p-select {
+      border-color: var(--red-error) !important;
+    }
+  }
+  .select{
+    width: 100% !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    border-color: var(--light-grey) !important;
+  }
+
+  .select:hover{
+    border-color: var(--primary-grey) !important;
+  }
+}

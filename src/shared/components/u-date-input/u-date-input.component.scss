@@ -1,0 +1,73 @@
+:host ::ng-deep .u-date-menu-input-wrapper{
+  p-datepicker {
+    .p-datepicker{
+      max-height: 36px;
+      max-width: 300px !important;
+      width: 100%;
+
+      .p-datepicker-input{
+        padding-left: 40px;
+      }
+      .p-datepicker-input:enabled:focus {
+        box-shadow: unset;
+      }
+      .p-datepicker-input-icon-container{
+        left: 10px
+      }
+    }
+  }
+  p-datepicker:hover {
+    .p-datepicker-input{
+      border-color: var(--primary-grey) !important;
+    }
+  }
+}
+
+.u-date-menu-input-wrapper {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.icon-content-date-wrapper {
+  position: absolute;
+  top: 7.5px;
+  left: 12px;
+}
+
+.u-date-menu-input {
+  max-width: 300px !important;
+  width: 100%;
+
+  ::ng-deep p-datepicker {
+    .p-datepicker{
+      max-height: 36px;
+    }
+  }
+
+}
+
+.reset-date {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.reset-date.active {
+  opacity: 1;
+  visibility: visible;
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
+
+@media (max-width: 960px) {
+  .reset-date {
+    top: 4px;
+  }
+}

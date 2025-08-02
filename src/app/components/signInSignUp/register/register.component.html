@@ -1,0 +1,111 @@
+<div class="min-h-screen flex items-center justify-center" style="padding: 2rem 0;">
+  <div class="container">
+    <div style="max-width: 500px; margin: 0 auto" class="pb-4">
+      <div class="card pt-2 flex flex-col">
+        <div class="text-center mb-6">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎓</div>
+          <h1 class="text-3xl font-bold mb-2">{{ 'JOIN_LIVE_SCHOOL' | translate }}</h1>
+          <p class="text-sm" style="color: #6b7280;">{{ 'CREATE_ACCOUNT_GET_STARTED' | translate }}</p>
+        </div>
+
+        <div>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="flex gap-4 mb-4">
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label class="form-label required">{{ 'FIRST_NAME' | translate }}</label>
+                <input type="text" class="form-input" autocomplete="true" formControlName="firstName"
+                       URequired="FIRST_NAME"
+                       [placeholder]="'ENTER_FIRST_NAME'| translate"
+                />
+              </div>
+
+              <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label class="form-label required">{{ 'LAST_NAME' | translate }}</label>
+                <input type="text" class="form-input" autocomplete="true" formControlName="lastName"
+                       URequired="LAST_NAME"
+                       [placeholder]="'ENTER_LAST_NAME' | translate"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">{{ 'EMAIL_ADDRESS' | translate }}</label>
+              <input type="email" class="form-input" autocomplete="true" formControlName="email"
+                     URequired="EMAIL_ADDRESS"
+                     UPattern="PLEASE_ENTER_VALID_EMAIL"
+                     [placeholder]="'ENTER_YOUR_EMAIL' | translate"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">{{ 'PHONE_NUMBER' | translate }}</label>
+              <input type="tel" class="form-input" autocomplete="true" formControlName="phone"
+                     URequired="PHONE_NUMBER"
+                     UPattern="ENTER_VALID_PHONE_NUMBER"
+                     [placeholder]="'ENTER_YOUR_PHONE' | translate"
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" class="checkbox-input" formControlName="isTeacher" id="isTeacher"
+                />
+                <label for="isTeacher" class="form-label" style="margin-bottom: 0;">
+                  {{ 'I_AM_TEACHER' | translate }}
+                </label>
+              </div>
+              <div class="text-sm mt-1" style="color: #6b7280;">
+                {{ 'CHECK_IF_EDUCATOR' | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">{{ 'PASSWORD' | translate }}</label>
+              <input type="password" class="form-input" formControlName="password"
+                     URequired="PASSWORD"
+                     UPattern="WEAK_PASSWORD_VALIDATION"
+                     [placeholder]="'CREATE_PASSWORD' | translate"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">{{ 'CONFIRM_PASSWORD' | translate }}</label>
+              <input type="password" class="form-input"
+                     [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+                     formControlName="confirmPassword"
+                     [placeholder]="'CONFIRM_PASSWORD' | translate"
+              />
+              @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
+                <span class="flex"
+                      style="color: red; padding-top: 4px; font-size: 12px; display: inline-flex; align-items: center;">
+                <i class="pi pi-info-circle" style="margin-right: 4px"></i>
+                  <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">
+                    {{ 'PLEASE_CONFIRM_PASSWORD' |translate }}
+                  </span>
+                  <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">
+                    {{ 'PASSWORD_DO_NOT_MATCH' |translate }}
+                  </span>
+              </span>
+              }
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full mb-4"
+                    [disabled]="registerForm.invalid || isLoading"
+            >
+              {{ (isLoading ? 'CREATING_ACCOUNT___' : 'CREATE_ACCOUNT') | translate }}
+            </button>
+
+            <div class="error-message text-center" *ngIf="errorMessage">
+              {{ errorMessage }}
+            </div>
+
+            <div class="text-center">
+              <span class="text-sm" style="color: #6b7280;">{{ 'ALREADY_HAVE_AN_ACCOUNT' | translate }} </span>
+              <a routerLink="/login" class="btn-link text-sm">{{ 'SIGN_IN' | translate }}</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

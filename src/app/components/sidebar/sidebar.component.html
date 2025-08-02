@@ -1,0 +1,33 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header">
+        <div class="logo">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text" *ngIf="!isCollapsed">ClassPro</span>
+        </div>
+        <button class="toggle-btn" (click)="toggleSidebar()">
+            <span class="hamburger"></span>
+        </button>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li *ngFor="let item of menuItems"
+                [class.active]="activeRoute === item.route"
+                (click)="navigateTo(item.route)">
+                <a class="nav-link">
+                    <span class="nav-icon">{{ item.icon }}</span>
+                    <span class="nav-text" *ngIf="!isCollapsed">{{ item.label }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="role-switcher" *ngIf="!isCollapsed">
+        <h4>Switch Role</h4>
+        <div class="role-buttons">
+            <button class="role-btn" (click)="switchRole('admin')">👨‍💼 Admin</button>
+            <button class="role-btn" (click)="switchRole('teacher')">👨‍🏫 Teacher</button>
+            <button class="role-btn" (click)="switchRole('pupil')">👩‍🎓 Student</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<div [class]="classCss">
+  <div class="u-date-menu-input-wrapper">
+    <div class="icon-content-date-wrapper">
+      <i class="pi pi-date" style="color: grey"></i>
+    </div>
+    <p-datepicker class="u-date-menu-input" inputId="icondisplay"
+                  [appendTo]="appendTo"
+                  [disabled]="disabled"
+                  [placeholder]="placeholder"
+                  [readonlyInput]="readonlyInput"
+                  [iconDisplay]="'input'"
+                  [showTime]="showTime"
+                  [showIcon]="true"
+                  [(ngModel)]="selectedDate"
+                  [inputStyle]="{'width':'100px !important'}"
+                  (ngModelChange)="valueChange.emit($event)"
+    ></p-datepicker>
+    <div class="reset-date"
+         [ngClass]="{ active: selectedDate }"
+         (click)="clearSelectedDate()">
+      <i class="pi pi-times-circle"></i>
+    </div>
+  </div>
+</div>

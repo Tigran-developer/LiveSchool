@@ -1,0 +1,208 @@
+<div class="dashboard-layout">
+    <app-sidebar
+            [menuItems]="menuItems"
+            [activeRoute]="activeRoute">
+    </app-sidebar>
+
+    <div class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>Teacher Dashboard</h1>
+                <p>Welcome back, John! Manage your classes and students</p>
+            </div>
+            <div class="header-right">
+                <app-notifications></app-notifications>
+                <div class="user-avatar">
+                    <span>👨‍🏫</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <!-- Dashboard Overview -->
+            <div *ngIf="activeRoute === '/teacher'" class="dashboard-overview fade-in">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-content">
+                            <h3>{{ upcomingClasses.length }}</h3>
+                            <p>Upcoming Classes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3>{{ completedClasses.length }}</h3>
+                            <p>Completed Classes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3>{{ totalStudents }}</h3>
+                            <p>Total Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card next-class" *ngIf="nextClass">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-content">
+                            <h3>{{ getTimeUntilClass(nextClass.date) }}</h3>
+                            <p>Next Class in</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="actions-grid">
+                        <button class="action-btn" *ngIf="nextClass" (click)="joinClass(nextClass)">
+                            <span class="action-icon">🚀</span>
+                            <span>Join Next Class</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📝</span>
+                            <span>Grade Assignments</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📊</span>
+                            <span>View Analytics</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">💬</span>
+                            <span>Message Students</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classes View -->
+            <div *ngIf="activeRoute === '/teacher/classes'" class="classes-view fade-in">
+                <div class="view-controls">
+                    <h2>My Classes</h2>
+                    <div class="view-toggles">
+                        <button class="toggle-btn" [class.active]="viewMode === 'calendar'" (click)="viewMode = 'calendar'">
+                            📅 Calendar
+                        </button>
+                        <button class="toggle-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+                            📋 List
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calendar View -->
+                <div *ngIf="viewMode === 'calendar'" class="calendar-view">
+                    <div class="calendar-header">
+                        <button class="nav-btn" (click)="previousMonth()">❮</button>
+                        <h3>{{ getCurrentMonthYear() }}</h3>
+                        <button class="nav-btn" (click)="nextMonth()">❯</button>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="day-header" *ngFor="let day of dayHeaders">{{ day }}</div>
+                        <div *ngFor="let day of calendarDays"
+                             class="calendar-day"
+                             [class.other-month]="!day.currentMonth"
+                             [class.today]="day.isToday">
+                            <span class="day-number">{{ day.date }}</span>
+                            <div *ngFor="let class of day.classes"
+                                 class="class-event"
+                                 [class.class-upcoming]="class.status === 'upcoming'"
+                                 [class.class-completed]="class.status === 'completed'">
+                                <div class="event-time">{{ formatTime(class.date) }}</div>
+                                <div class="event-title">{{ class.title }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div *ngIf="viewMode === 'list'" class="list-view">
+                    <div class="class-filters">
+                        <button class="filter-btn" [class.active]="classFilter === 'all'" (click)="classFilter = 'all'">
+                            All Classes
+                        </button>
+                        <button class="filter-btn" [class.active]="classFilter === 'upcoming'" (click)="classFilter = 'upcoming'">
+                            Upcoming
+                        </button>
+                        <button class="filter-btn" [class.active]="classFilter === 'completed'" (click)="classFilter = 'completed'">
+                            Completed
+                        </button>
+                    </div>
+
+                    <div class="classes-list">
+                        <div *ngFor="let class of getFilteredClasses()" class="class-item">
+                            <div class="class-info">
+                                <div class="class-main">
+                                    <h3>{{ class.title }}</h3>
+                                    <p class="class-description">{{ class.description }}</p>
+                                </div>
+                                <div class="class-details">
+                                    <div class="detail-item">
+                                        <span class="detail-icon">📅</span>
+                                        <span>{{ formatDateTime(class.date) }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-icon">⏱️</span>
+                                        <span>{{ class.duration }} minutes</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-icon">👥</span>
+                                        <span>{{ class.pupilNames.length }} student(s)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class-actions">
+                <span class="status-badge" [ngClass]="'status-' + class.status">
+                  {{ class.status }}
+                </span>
+                                <button *ngIf="class.status === 'upcoming'" class="btn btn-primary" (click)="joinClass(class)">
+                                    Join Class
+                                </button>
+                                <button *ngIf="class.status === 'completed'" class="btn btn-secondary">
+                                    View Recording
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div *ngIf="activeRoute === '/teacher/history'" class="history-view fade-in">
+                <h2>Class History</h2>
+                <div class="history-stats">
+                    <div class="history-card">
+                        <h3>Total Classes Taught</h3>
+                        <div class="big-number">{{ completedClasses.length }}</div>
+                    </div>
+                    <div class="history-card">
+                        <h3>Total Hours</h3>
+                        <div class="big-number">{{ getTotalHours() }}</div>
+                    </div>
+                    <div class="history-card">
+                        <h3>Average Rating</h3>
+                        <div class="big-number">4.8 ⭐</div>
+                    </div>
+                </div>
+
+                <div class="history-list">
+                    <div *ngFor="let class of completedClasses" class="history-item">
+                        <div class="history-info">
+                            <h4>{{ class.title }}</h4>
+                            <p>{{ formatDateTime(class.date) }} • {{ class.duration }} min</p>
+                            <div class="students-list">
+                <span *ngFor="let student of class.pupilNames; let last = last">
+                  {{ student }}<span *ngIf="!last">, </span>
+                </span>
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn-icon">📊 Analytics</button>
+                            <button class="btn-icon">📹 Recording</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

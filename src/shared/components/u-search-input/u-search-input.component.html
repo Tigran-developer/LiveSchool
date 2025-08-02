@@ -1,0 +1,24 @@
+<div [class]="classCss">
+  <div class="u-search-menu-input-wrapper">
+    <div class="icon-content-search-wrapper">
+      <i class="pi pi-search" style="color: grey"></i>
+    </div>
+    <input
+      [disabled]="disabled"
+      class="u-search-menu-input"
+      pInputText
+      [placeholder]="placeholder | translate"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="valueChange.emit($event)"
+    >
+    <div
+      class="reset-search"
+      [ngClass]="{ active: searchQuery }"
+      (click)="clearSearch()"
+      (mouseenter)="isHovered = true"
+      (mouseleave)="isHovered = false"
+    >
+      <img [src]="isHovered ? '/svg/close-circle-svg/close-circle-fill-hover.svg' : '/svg/close-circle-svg/close-circle-fill-input.svg'" />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="notifications-container">
+    <button class="notification-bell" (click)="toggleDropdown()">
+        <span class="bell-icon">🔔</span>
+        <span class="notification-count" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+
+    <div class="notification-dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+        <div class="dropdown-header">
+            <h3>Notifications</h3>
+            <button class="close-btn" (click)="toggleDropdown()">×</button>
+        </div>
+
+        <div class="notification-list">
+            <div *ngIf="notifications.length === 0" class="empty-state">
+                <p>No notifications yet</p>
+            </div>
+
+            <div *ngFor="let notification of notifications"
+                 class="notification-item"
+                 [class.unread]="!notification.read"
+                 [class.notification-success]="notification.type === 'success'"
+                 [class.notification-warning]="notification.type === 'warning'"
+                 [class.notification-info]="notification.type === 'info'"
+                 [class.notification-error]="notification.type === 'error'"
+                 (click)="markAsRead(notification.id)">
+                <div class="notification-icon">
+                    <span *ngIf="notification.type === 'success'">✅</span>
+                    <span *ngIf="notification.type === 'warning'">⚠️</span>
+                    <span *ngIf="notification.type === 'info'">ℹ️</span>
+                    <span *ngIf="notification.type === 'error'">❌</span>
+                </div>
+                <div class="notification-content">
+                    <h4>{{ notification.title }}</h4>
+                    <p>{{ notification.message }}</p>
+                    <span class="notification-time">{{ formatTime(notification.createdAt) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="notification-overlay" *ngIf="showDropdown" (click)="toggleDropdown()"></div>

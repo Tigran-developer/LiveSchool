@@ -1,0 +1,78 @@
+<div class="app-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>
+          <lucide-icon [img]="bookOpenIcon" class="header-icon"></lucide-icon>
+          Available Classes
+        </h1>
+        <p>
+          Discover and enroll in our comprehensive range of professional development courses
+        </p>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="search-filters">
+        <div class="filters-container">
+          <!-- Search Bar -->
+          <div class="search-container">
+            <lucide-icon [img]="searchIcon" class="search-icon"></lucide-icon>
+            <input
+              type="text"
+              placeholder="Search classes, teachers, or topics..."
+              [(ngModel)]="searchTerm"
+              (input)="filterClasses()"
+              class="search-input"
+            />
+          </div>
+
+          <!-- Filters -->
+          <div class="filters-group">
+            <div class="filter-select">
+              <lucide-icon [img]="filterIcon" class="filter-icon"></lucide-icon>
+              <select
+                [(ngModel)]="selectedCategory"
+                (change)="filterClasses()"
+              >
+                <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+              </select>
+            </div>
+
+            <div class="filter-select">
+              <select
+                [(ngModel)]="selectedLevel"
+                (change)="filterClasses()"
+                class="level-select"
+              >
+                <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Classes Grid -->
+  <div class="main-content">
+    <div class="results-info">
+      <p>
+        Showing <span class="results-count">{{ filteredClasses.length }}</span> classes
+      </p>
+    </div>
+
+    <div class="classes-grid">
+      <class-card
+        *ngFor="let classItem of filteredClasses; trackBy: trackByClassId"
+        [class]="classItem">
+      </class-card>
+    </div>
+
+    <div *ngIf="filteredClasses.length === 0" class="empty-state">
+      <lucide-icon [img]="bookOpenIcon" class="empty-icon"></lucide-icon>
+      <h3>No classes found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>
+  </div>
+</div>

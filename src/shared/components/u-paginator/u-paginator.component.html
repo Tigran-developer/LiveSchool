@@ -1,0 +1,47 @@
+<div class="pagination-container">
+  <div class="pagination-container-row">
+    <div class="page-size-selector">
+      <p-dropdown
+        [options]="pageLengthOptions"
+        [(ngModel)]="size"
+        [style]="{ width: '88px' }"
+        [panelStyle]="{ width: '88px' }"
+        (ngModelChange)="emitChanges(page)"
+        [appendTo]="'body'"
+      ></p-dropdown>
+    </div>
+
+    <div class="pagination-controls">
+      <button
+        class="page-btn"
+        *ngIf="!(page === 1 || disabled)"
+        [disabled]="page === 1 || disabled"
+        (click)="emitChanges(page - 1)"
+      >
+        <span><img src="/svg/arrow-left-s-line.svg" /></span>
+      </button>
+
+      <ng-container *ngFor="let item of getVisiblePages()">
+        <button
+          class="page-btn"
+          [disabled]="disabled"
+          *ngIf="item !== -1"
+          [class.active]="page === item"
+          (click)="emitChanges(item)"
+        >
+          {{ item }}
+        </button>
+        <span *ngIf="item === -1" class="page-dots">...</span>
+      </ng-container>
+
+      <button
+        class="page-btn"
+        *ngIf="!(page === totalPages || disabled)"
+        [disabled]="page === totalPages || disabled"
+        (click)="emitChanges(page + 1)"
+      >
+        <span><img src="/svg/arrow-right-s-line.svg" /></span>
+      </button>
+    </div>
+  </div>
+</div>

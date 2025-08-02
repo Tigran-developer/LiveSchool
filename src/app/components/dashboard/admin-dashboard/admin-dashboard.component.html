@@ -1,0 +1,201 @@
+<div class="dashboard-layout">
+    <app-sidebar
+            [menuItems]="menuItems"
+            [activeRoute]="activeRoute">
+    </app-sidebar>
+
+    <div class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>Admin Dashboard</h1>
+                <p>Manage teachers, classes, and platform settings</p>
+            </div>
+            <div class="header-right">
+                <app-notifications></app-notifications>
+                <div class="user-avatar">
+                    <span>👨‍💼</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <!-- Dashboard Overview -->
+            <div *ngIf="activeRoute === '/admin'" class="dashboard-overview fade-in">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-content">
+                            <h3>{{ approvedTeachers }}</h3>
+                            <p>Approved Teachers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👩‍🎓</div>
+                        <div class="stat-content">
+                            <h3>{{ totalStudents }}</h3>
+                            <p>Active Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-content">
+                            <h3>{{ totalClasses }}</h3>
+                            <p>Scheduled Classes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3>{{ pendingTeachers.length }}</h3>
+                            <p>Pending Approvals</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Teachers -->
+            <div *ngIf="activeRoute === '/admin/teachers'" class="pending-teachers fade-in">
+                <h2>Pending Teacher Approvals</h2>
+                <div class="teachers-grid">
+                    <div *ngFor="let teacher of pendingTeachers" class="teacher-card">
+                        <div class="teacher-info">
+                            <img [src]="teacher.avatar" [alt]="teacher.firstName" class="teacher-avatar">
+                            <div class="teacher-details">
+                                <h3>{{ teacher.firstName }}</h3>
+                                <p class="teacher-email">{{ teacher.email }}</p>
+                                <p class="teacher-specialization">{{ teacher.specialization }}</p>
+                                <p class="teacher-experience">{{ teacher.experience }} years experience</p>
+                                <p class="teacher-rate">${{ teacher.hourlyRate }}/hour</p>
+                            </div>
+                        </div>
+                        <div class="teacher-actions">
+                            <button class="btn btn-success" (click)="approveTeacher(teacher.id || -1)">
+                                ✓ Approve
+                            </button>
+                            <button class="btn btn-danger" (click)="rejectTeacher(teacher.id || -1)">
+                                ✗ Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Class Form -->
+            <div *ngIf="activeRoute === '/admin/classes'" class="create-class fade-in">
+                <h2>Manage Classes</h2>
+
+                <div class="create-class-form card">
+                    <h3>Create New Class</h3>
+                    <form (ngSubmit)="createClass()" #classForm="ngForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Class Title</label>
+                                <input type="text" class="form-input" [(ngModel)]="newClass.title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Teacher</label>
+                                <select class="form-select" [(ngModel)]="newClass.teacherId" name="teacherId" required>
+                                    <option value="">Select Teacher</option>
+                                    <option value="2">Emily Rodriguez</option>
+                                    <option value="3">Michael Chen</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input" [(ngModel)]="newClass.description" name="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="datetime-local" class="form-input" [(ngModel)]="newClass.date" name="date" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Duration (minutes)</label>
+                                <input type="number" class="form-input" [(ngModel)]="newClass.duration" name="duration" min="15" max="180" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Zoom Link</label>
+                                <input type="url" class="form-input" [(ngModel)]="newClass.zoomLink" name="zoomLink" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Recurring</label>
+                                <select class="form-select" [(ngModel)]="newClass.recurring" name="recurring">
+                                    <option value="none">None</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" [disabled]="!classForm.valid">
+                            Create Class
+                        </button>
+                    </form>
+                </div>
+
+                <div class="classes-list">
+                    <h3>Scheduled Classes</h3>
+                    <div class="classes-table">
+                        <div class="table-header">
+                            <div>Title</div>
+                            <div>Teacher</div>
+                            <div>Date & Time</div>
+                            <div>Duration</div>
+                            <div>Status</div>
+                            <div>Actions</div>
+                        </div>
+                        <div *ngFor="let class of classes" class="table-row">
+                            <div class="class-title">{{ class.title }}</div>
+                            <div>{{ class.teacherName }}</div>
+                            <div>{{ formatDateTime(class.date) }}</div>
+                            <div>{{ class.duration }}min</div>
+                            <div>
+                    <span class="status-badge" [ngClass]="'status-' + class.status">
+                      {{ class.status }}
+                    </span>
+                            </div>
+                            <div class="table-actions">
+                                <button class="btn-icon edit" title="Edit">✏️</button>
+                                <button class="btn-icon delete" (click)="deleteClass(class.id)" title="Delete">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Plans -->
+            <div *ngIf="activeRoute === '/admin/plans'" class="subscription-plans fade-in">
+                <h2>Subscription Plan Manager</h2>
+                <div class="plans-grid">
+                    <div *ngFor="let plan of subscriptionPlans" class="plan-card">
+                        <div class="plan-header">
+                            <h3>{{ plan.name }}</h3>
+                            <div class="plan-price">${{ plan.price }}</div>
+                        </div>
+                        <div class="plan-content">
+                            <p class="plan-classes">{{ plan.classCount }} classes included</p>
+                            <p class="plan-description">{{ plan.description }}</p>
+                        </div>
+                        <div class="plan-actions">
+                            <button class="btn btn-primary">Edit Plan</button>
+                        </div>
+                    </div>
+
+                    <div class="plan-card add-plan">
+                        <div class="add-plan-content">
+                            <div class="add-icon">+</div>
+                            <h3>Create New Plan</h3>
+                            <p>Add a new subscription plan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

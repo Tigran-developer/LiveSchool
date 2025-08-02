@@ -1,0 +1,21 @@
+<div class="dialog-wrapper">
+  <p-dialog
+    class="dialog"
+    modal
+    [(visible)]="visible"
+    [draggable]="false"
+    [header]="headerTextKey | translate">
+    <p>{{ messageKey | translate }}</p>
+
+    <ng-template #footer>
+      <button class="primary-light-button"
+              (click)="confirm(false)">
+        {{ 'CANCEL' | translate }}
+      </button>
+      <button class="primary-button"
+              (click)="confirm(true)">
+        {{ 'CONFIRM' | translate }}
+      </button>
+    </ng-template>
+  </p-dialog>
+  </div>
