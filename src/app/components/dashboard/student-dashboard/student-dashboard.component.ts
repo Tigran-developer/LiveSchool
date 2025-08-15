@@ -13,23 +13,15 @@ import {DataClassService} from '../../../services/data-class.service';
 @Component({
   selector: 'app-pupil-dashboard',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, NotificationsComponent, ClassesComponent, RouterOutlet],
-  templateUrl: './pupil-dashboard.component.html',
-  styleUrls: ['./pupil-dashboard.component.scss']
+  imports: [CommonModule, NotificationsComponent, RouterOutlet],
+  templateUrl: './student-dashboard.component.html',
+  styleUrls: ['./student-dashboard.component.scss']
 })
-export class PupilDashboardComponent implements OnInit {
+export class StudentDashboardComponent implements OnInit {
   private dataClassService = inject(DataClassService);
   private router = inject(Router);
 
   private destroy$ = new Subject<void>();
-
-  menuItems = [
-    { icon: '📊', label: 'Dashboard', route: '/pupil' },
-    { icon: '📚', label: 'My Classes', route: '/pupil/classes' },
-    { icon: '🔍', label: 'Browse Classes', route: '/pupil/browse' },
-    { icon: '💳', label: 'Subscription', route: '/pupil/subscription' },
-    { icon: '📈', label: 'Progress', route: '/pupil/progress' }
-  ];
 
   activeRoute: string| undefined;
   allClasses: IClassDetails[] | null = null;

@@ -1,7 +1,7 @@
 import {IUser} from './iUser';
 import {ISubscriptionPlan} from './iSubscription-plan';
 
-export interface IPupil extends IUser {
+export interface IStudent extends IUser {
   role: 'pupil';
   subscriptionPlan: ISubscriptionPlan;
   remainingClasses: number;

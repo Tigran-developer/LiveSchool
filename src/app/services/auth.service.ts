@@ -3,9 +3,7 @@ import {BehaviorSubject, catchError, map, Observable, of} from 'rxjs';
 import {IRegisterUser} from '../../shared/interfaces/iRegister-user';
 import {HttpClient} from '@angular/common/http';
 import {ApiPath} from '../../shared/constants/api-path';
-import {environment} from '../../enviroments/environment';
 import {IResponse} from '../../shared/interfaces/iResponse';
-import {Router} from '@angular/router';
 import {ICurrentUser} from '../../shared/interfaces/iCurrent-user';
 
 @Injectable({
@@ -25,11 +23,11 @@ export class AuthService {
   }
 
   set currentUser(value: ICurrentUser | null) {
+    localStorage.setItem(this.userStorageKey, JSON.stringify(value));
     this._currentUser = value;
   }
 
-  constructor(private http: HttpClient,
-              private router: Router,) {
+  constructor(private http: HttpClient) {
   }
 
   register(user: IRegisterUser): Observable<IResponse> {
@@ -45,18 +43,21 @@ export class AuthService {
     )
   }
 
-  login(login: { email: string, password: string }): Observable<{ success: boolean }> {
+  login(login: { email: string, password: string }): Observable<{ success: boolean, message?: string }> {
     const body = {
       EmailPhone: login.email,
       Password: login.password
     }
-    return this.http.post<ICurrentUser>(ApiPath.auth+ApiPath.authenticate, body, {withCredentials: true}).pipe(
+    return this.http.post<ICurrentUser>(ApiPath.auth + ApiPath.authenticate, body, {withCredentials: true}).pipe(
       map((user) => {
-        this._currentUser = user;
+        this.currentUser = user;
         this.isLoggedIn$.next(true);
         return {success: true};
       }),
-      catchError(error => {
+      catchError(res => {
+        if(res.error === 'Email not confirmed.'){
+          return of({success: false, message: 'CONFIRM_EMAIL'})
+        }
         return of({success: false});
       })
     )

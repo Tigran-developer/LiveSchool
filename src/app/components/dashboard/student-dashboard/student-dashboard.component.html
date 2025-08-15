@@ -1,13 +1,8 @@
 <div class="dashboard-layout">
-  <app-sidebar
-    [menuItems]="menuItems"
-    [activeRoute]="activeRoute||''">
-  </app-sidebar>
-
   <div class="main-content">
     <header class="header">
       @switch (activeRoute) {
-        @case ('/pupil/classes') {
+        @case ('/pupil/booked-classes') {
           <div class="header-left">
             <h1>My Classes</h1>
             <p>Welcome back, Sarah! Ready to learn something new today?</p>
@@ -33,6 +28,7 @@
     </header>
 
     <div> <!--class="content-area"-->
+
       <!-- Dashboard Overview -->
       <div *ngIf="activeRoute === '/pupil'" class="dashboard-overview fade-in">
         <div class="stats-grid">
@@ -86,8 +82,9 @@
 
       <!-- My Classes -->
       <router-outlet></router-outlet>
+
       <!-- Browse Classes -->
-      <div *ngIf="activeRoute === '/pupil/browse'" class="browse-classes fade-in">
+      <!--<div *ngIf="activeRoute === '/pupil/browse-classes'" class="browse-classes fade-in">
         <h2>Available Classes</h2>
         <div class="browse-filters">
           <select class="filter-select">
@@ -124,10 +121,10 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
 
       <!-- Subscription Management -->
-      <div *ngIf="activeRoute === '/pupil/subscription'" class="subscription-view fade-in">
+      <!--<div *ngIf="activeRoute === '/pupil/subscription'" class="subscription-view fade-in">
         <div class="current-plan">
           <h2>Your Current Plan</h2>
           <div class="plan-status">
@@ -186,7 +183,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
   </div>
 </div>

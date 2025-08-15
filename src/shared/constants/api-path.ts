@@ -7,5 +7,8 @@ export const ApiPath = {
   confirm_email: '/confirm-email',
   logout: '/logout',
   users: '/users',
+  pupils: '/pupils',
   classes: '/classes',
+  student: '/student',
+  booked_classes: '/booked_classes',
 };

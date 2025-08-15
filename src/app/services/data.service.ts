@@ -14,7 +14,7 @@ export class DataService {
 
   private pendingTeachersSubject = new BehaviorSubject<ITeacher[]>([
     {
-      id: 2,
+      id: '2',
       firstName: 'Emily',
       lastName: 'Rodriguez',
       email: 'emily@platform.com',
@@ -27,7 +27,7 @@ export class DataService {
       createdAt: new Date('2025-01-01').toString()
     },
     {
-      id: 3,
+      id: '3',
       firstName: 'Michael',
       lastName: 'Chen',
       email: 'michael@platform.com',
@@ -94,12 +94,12 @@ export class DataService {
 
   // Methods
   approveTeacher(teacherId: number): void {
-    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId);
+    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId.toString());
     this.pendingTeachersSubject.next(teachers);
   }
 
   rejectTeacher(teacherId: number): void {
-    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId);
+    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId.toString());
     this.pendingTeachersSubject.next(teachers);
   }
 

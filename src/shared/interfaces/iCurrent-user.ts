@@ -1,7 +1,8 @@
 export interface ICurrentUser {
+  id: string;
   email: string,
-  firstname: string,
-  lastname: number,
+  firstName: string,
+  lastName: string,
   phone: string,
   isTeacher: string,
 }

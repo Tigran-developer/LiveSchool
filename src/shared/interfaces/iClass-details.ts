@@ -1,5 +1,6 @@
 import {ISimplePrivateUser} from './iSimple-private-user';
 import {ISimpleUser} from './iSimple-user';
+import {IClassStatus} from './iclass-status';
 
 export interface IClassDetails {
   id: string;
@@ -9,7 +10,7 @@ export interface IClassDetails {
   durationInMinutes: number;
   zoomLink: string;
   isRecurring: boolean,
-  status: 'upcoming' | 'in-progress' | 'completed' | 'cancelled';
+  status: IClassStatus;
   recurrencePattern?: 'none' | 'weekly' | 'monthly';
   maxParticipants: number,
   participantsCount: number,

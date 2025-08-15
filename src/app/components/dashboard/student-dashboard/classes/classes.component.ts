@@ -6,6 +6,8 @@ import {IClassDetails} from '../../../../../shared/interfaces/iClass-details';
 import {ActivatedRoute} from '@angular/router';
 import {DataClassService} from "../../../../services/data-class.service";
 import {tap} from "rxjs";
+import {AuthService} from '../../../../services/auth.service';
+import {ClassStatus} from '../../../../../shared/constants/ClassStatus';
 
 @Component({
   selector: 'app-classes',
@@ -19,7 +21,6 @@ import {tap} from "rxjs";
   styleUrl: './classes.component.scss'
 })
 export class ClassesComponent implements OnInit {
-
   viewMode: 'upcoming' | 'history' = 'upcoming';
   upcomingClasses: IClassDetails[] = [];
   completedClasses: IClassDetails[] = [];
@@ -28,18 +29,22 @@ export class ClassesComponent implements OnInit {
 
   activeRoute: string|undefined;
 
-  private dataClassService = inject(DataClassService);
+  private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
+  private dataClassService = inject(DataClassService);
 
   ngOnInit(): void {
-    this.dataClassService.getAllClasses().pipe(
+    const studentId = this.authService.currentUser?.id
+    if(studentId) {
+      this.dataClassService.getBookedClasses(studentId).pipe(
         tap(classes => {
-              this.upcomingClasses = classes?.filter(c => c.status.toLowerCase() === 'upcoming') || [];
-              this.completedClasses = classes?.filter(c => c.status.toLowerCase() === 'completed') || [];
-              this.availableClasses = classes?.filter(c => c.status.toLowerCase() === 'upcoming') || [];
-            }
+            this.upcomingClasses = classes?.filter(c => c.status.id.toUpperCase() === ClassStatus.UPCOMING) || [];
+            this.completedClasses = classes?.filter(c => c.status.id.toUpperCase() === ClassStatus.COMPLETED) || [];
+            this.availableClasses = classes?.filter(c => c.status.id.toUpperCase() === ClassStatus.CANCELLED) || [];
+          }
         )
-    ).subscribe();
+      ).subscribe();
+    }
 
     this.activeRoute = this.route?.routeConfig?.path
     this.nextClass = this.upcomingClasses

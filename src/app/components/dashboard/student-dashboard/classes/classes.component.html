@@ -1,0 +1,89 @@
+<div class="my-classes fade-in">
+  <div class="view-controls justify-end">
+    <div class="view-toggles">
+      <button class="toggle-btn" [class.active]="viewMode === 'upcoming'" (click)="viewMode = 'upcoming'">
+        📅 Upcoming
+      </button>
+      <button class="toggle-btn" [class.active]="viewMode === 'history'" (click)="viewMode = 'history'">
+        📋 History
+      </button>
+    </div>
+  </div>
+
+  <!-- Upcoming Classes -->
+  <div *ngIf="viewMode === 'upcoming'" class="upcoming-classes">
+    <div *ngIf="upcomingClasses.length === 0" class="empty-state">
+      <div class="empty-icon">📅</div>
+      <h3>No upcoming classes</h3>
+      <p>Browse available classes to book your next session</p>
+      <button class="btn btn-primary" (click)="activeRoute = '/pupil/browse'">Browse Classes</button>
+    </div>
+
+    <div class="classes-grid">
+      <div *ngFor="let item of upcomingClasses" class="class-card upcoming">
+        <div class="class-header">
+          <h3>{{ item.title }}</h3>
+          <span class="class-status upcoming">{{ getTimeUntilClass(item.startTime) }}</span>
+        </div>
+        <div class="class-content">
+          <p class="class-description">{{ item.description }}</p>
+          <div class="class-details">
+            <div class="detail-item">
+              <span class="detail-icon">👨‍🏫</span>
+              <span>{{ item.teacher.firstName + ' ' + item.teacher.lastName}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span>{{ item.startTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">⏱️</span>
+              <span>{{ item.durationInMinutes }} minutes</span>
+            </div>
+          </div>
+        </div>
+        <div class="class-actions">
+          <button class="btn btn-primary" (click)="joinClass(item)">
+            🚀 Join Class
+          </button>
+          <button class="btn btn-secondary">
+            📋 Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Class History -->
+  <div *ngIf="viewMode === 'history'" class="class-history">
+    <div class="history-stats">
+      <div class="history-stat">
+        <h4>Total Classes</h4>
+        <div class="stat-number">{{ completedClasses.length }}</div>
+      </div>
+      <div class="history-stat">
+        <h4>Hours Learned</h4>
+        <div class="stat-number">{{ getTotalHours() }}</div>
+      </div>
+      <div class="history-stat">
+        <h4>Average Grade</h4>
+        <div class="stat-number">A- 📈</div>
+      </div>
+    </div>
+
+    <div class="history-list">
+
+      <div *ngFor="let item of completedClasses" class="history-item">
+        <div class="history-info">
+          <h4>{{ item.title }}</h4>
+          <p class="teacher-name">with {{ item.teacher.firstName + ' ' + item.teacher.lastName}}</p>
+          <p class="class-date">{{ item.startTime }}</p>
+        </div>
+        <div class="history-actions">
+          <div class="grade-display">Grade: A- ⭐</div>
+          <button class="btn-small">📹 Recording</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

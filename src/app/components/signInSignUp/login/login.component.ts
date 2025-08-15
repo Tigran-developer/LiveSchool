@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {TranslatePipe} from '@ngx-translate/core';
@@ -34,6 +34,7 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
+    private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private authService: AuthService,
     private activatedRoute: ActivatedRoute
@@ -66,17 +67,18 @@ export class LoginComponent {
           this.authService.login(this.loginForm.value).pipe(
             tap(response => {
               this.isLoading = false;
-              if (response) {
+              if (response.success) {
                 if(this.authService.currentUser?.isTeacher){
                   this.router.navigate(['/teacher']);
                 }else {
                   this.router.navigate(['/pupil']);
                 }
               } else {
-                this.errorMessage = 'LOGIN.ERROR.INVALID_CREDENTIALS';
+                response.message
+                this.errorMessage = response.message ?? 'LOGIN.ERROR.INVALID_CREDENTIALS';
+                this.cdr.detectChanges();
               }
-            }),
-            catchError(() => of())
+            })
           )
         )
       ).subscribe();
