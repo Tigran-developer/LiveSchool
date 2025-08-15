@@ -34,11 +34,11 @@ export class AppComponent {
   }
 
   menuItems = [
-    { icon: '📊', label: 'Dashboard', route: '/pupil' },
     { icon: '📚', label: 'Booked Classes', route: '/pupil/booked-classes' },
     { icon: '🔍', label: 'All Classes', route: '/pupil/browse-classes' },
     { icon: '💳', label: 'Subscription', route: '/pupil/subscription' },
-    { icon: '📈', label: 'Progress', route: '/pupil/progress' }
+    /*{ icon: '📊', label: 'Dashboard', route: '/pupil' },*/
+    /*{ icon: '📈', label: 'Progress', route: '/pupil/progress' }*/
   ];
 
   ngOnInit() {

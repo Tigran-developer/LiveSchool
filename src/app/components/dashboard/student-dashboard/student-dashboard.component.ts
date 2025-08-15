@@ -1,13 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
-import {Subject, takeUntil} from "rxjs";
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router, RouterOutlet} from '@angular/router';
+import {Subject} from "rxjs";
 import {ISubscriptionPlan} from '../../../../shared/interfaces/iSubscription-plan';
-import {SidebarComponent} from '../../sidebar/sidebar.component';
 import {NotificationsComponent} from '../../notifications/notifications.component';
-import {DataService} from '../../../services/data.service';
 import {IClassDetails} from '../../../../shared/interfaces/iClass-details';
-import {ClassesComponent} from './classes/classes.component';
 import {DataClassService} from '../../../services/data-class.service';
 
 @Component({

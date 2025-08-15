@@ -7,7 +7,7 @@ import {ForgotPasswordComponent} from './components/signInSignUp/forgot-password
 import {MenuBarComponent} from './components/signInSignUp/menu-bar/menu-bar.component';
 import {TeacherDashboardComponent} from './components/dashboard/teacher-dashboard/teacher-dashboard.component';
 import {AdminDashboardComponent} from './components/dashboard/admin-dashboard/admin-dashboard.component';
-import {ClassesComponent} from './components/dashboard/student-dashboard/classes/classes.component';
+import {AllClassesComponent} from './components/dashboard/student-dashboard/all-classes/all-classes.component';
 import {StudentDashboardComponent} from './components/dashboard/student-dashboard/student-dashboard.component';
 import {BookedClassesComponent} from './components/dashboard/student-dashboard/booked-classes/booked-classes.component';
 
@@ -23,10 +23,10 @@ export const routes: Routes = [
   {path: 'teacher/:section', component: TeacherDashboardComponent},
   {
     path: 'pupil', component: StudentDashboardComponent,children: [
-      {path: 'classes', component: ClassesComponent},
+      {path: 'classes', component: AllClassesComponent},
       {path: 'booked-classes', component: BookedClassesComponent},
-      {path: 'browse-classes', component: ClassesComponent},
-      {path: 'subscription-plans', component: ClassesComponent}
+      {path: 'browse-classes', component: AllClassesComponent},
+      {path: 'subscription-plans', component: AllClassesComponent}
     ]
   },
   {path: '**', redirectTo: 'login'},

@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {catchError, map, Observable, of, tap} from 'rxjs';
+import {catchError, EMPTY, map, Observable, of, tap} from 'rxjs';
 import {ApiPath} from '../../shared/constants/api-path';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {IClassDetails} from '../../shared/interfaces/iClass-details';
@@ -24,7 +24,7 @@ export class DataClassService {
       }),
       catchError(err => {
         console.error('Error fetching classes', err);
-        return of(null)
+        return EMPTY;
       })
     )
   }
@@ -42,7 +42,7 @@ export class DataClassService {
       }),
       catchError(err => {
         console.error('Error fetching classes for student with id => ', studentId, err);
-        return of(null)
+        return EMPTY;
       })
     )
   }

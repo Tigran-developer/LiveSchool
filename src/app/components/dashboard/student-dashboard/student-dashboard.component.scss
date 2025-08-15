@@ -4,8 +4,7 @@
 }
 
 .main-content {
-    flex: 1;
-    margin-left: 280px;
+    width: 100%;
     background: #f8fafc;
 }
 
@@ -70,7 +69,7 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 24px;
     margin-bottom: 32px;
 }
@@ -460,11 +459,7 @@
     background: #f3f4f6;
 }
 
-.browse-filters {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-}
+
 
 .filter-select {
     padding: 10px 16px;

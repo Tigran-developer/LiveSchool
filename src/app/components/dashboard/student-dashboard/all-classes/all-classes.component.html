@@ -1,0 +1,38 @@
+<div class="browse-classes fade-in">
+  <div class="browse-filters">
+    <select class="filter-select">
+      <option>All Subjects</option>
+      <option>Mathematics</option>
+      <option>Physics</option>
+      <option>Chemistry</option>
+      <option>Biology</option>
+    </select>
+    <select class="filter-select">
+      <option>All Levels</option>
+      <option>Beginner</option>
+      <option>Intermediate</option>
+      <option>Advanced</option>
+    </select>
+  </div>
+
+  <div class="available-classes">
+    @let classes = availableClasses$ | async;
+    <div *ngFor="let item of classes" class="available-class-card">
+      <div class="class-info">
+        <h3>{{ item.title }}</h3>
+        <p class="class-description">{{ item.description }}</p>
+        <div class="class-meta">
+          <span class="teacher">👨‍🏫 {{ item.teacher.firstName + ' ' + item.teacher.lastName }}</span>
+          <span class="duration">⏱️ {{ item.durationInMinutes }} min</span>
+          <span class="date">📅 {{ item.startTime }}</span>
+        </div>
+      </div>
+      <div class="class-booking">
+        <div class="class-price">1 Credit</div>
+        <button class="btn btn-primary" [disabled]="remainingClasses <= 0" (click)="bookClass(item)">
+          {{ remainingClasses <= 0 ? 'No Credits' : 'Book Class' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

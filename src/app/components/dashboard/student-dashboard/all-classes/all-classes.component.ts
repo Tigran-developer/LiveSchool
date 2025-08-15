@@ -3,9 +3,9 @@ import {LucideAngularModule} from 'lucide-angular';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {IClassDetails} from '../../../../../shared/interfaces/iClass-details';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {DataClassService} from "../../../../services/data-class.service";
-import {tap} from "rxjs";
+import {Observable, of, tap} from "rxjs";
 import {AuthService} from '../../../../services/auth.service';
 import {ClassStatus} from '../../../../../shared/constants/ClassStatus';
 
@@ -15,38 +15,29 @@ import {ClassStatus} from '../../../../../shared/constants/ClassStatus';
   imports: [
     CommonModule,
     LucideAngularModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
-  templateUrl: './classes.component.html',
-  styleUrl: './classes.component.scss'
+  templateUrl: './all-classes.component.html',
+  styleUrl: './all-classes.component.scss'
 })
-export class ClassesComponent implements OnInit {
+export class AllClassesComponent implements OnInit {
   viewMode: 'upcoming' | 'history' = 'upcoming';
   upcomingClasses: IClassDetails[] = [];
   completedClasses: IClassDetails[] = [];
-  availableClasses: IClassDetails[] = [];
+  availableClasses$: Observable<IClassDetails[] | null> = of(null);
   nextClass: IClassDetails | null = null;
+  remainingClasses = 5;
 
-  activeRoute: string|undefined;
+  constructor(private authService: AuthService,
+              private route: ActivatedRoute,
+              private dataClassService: DataClassService) {
+  }
 
-  private authService = inject(AuthService);
-  private route = inject(ActivatedRoute);
-  private dataClassService = inject(DataClassService);
 
   ngOnInit(): void {
-    const studentId = this.authService.currentUser?.id
-    if(studentId) {
-      this.dataClassService.getBookedClasses(studentId).pipe(
-        tap(classes => {
-            this.upcomingClasses = classes?.filter(c => c.status.id.toUpperCase() === ClassStatus.UPCOMING) || [];
-            this.completedClasses = classes?.filter(c => c.status.id.toUpperCase() === ClassStatus.COMPLETED) || [];
-            this.availableClasses = classes?.filter(c => c.status.id.toUpperCase() === ClassStatus.CANCELLED) || [];
-          }
-        )
-      ).subscribe();
-    }
 
-    this.activeRoute = this.route?.routeConfig?.path
+    this.availableClasses$ = this.dataClassService.getAllClasses();
     this.nextClass = this.upcomingClasses
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0] || null;
   }
@@ -60,6 +51,12 @@ export class ClassesComponent implements OnInit {
     if (classSession.zoomLink) window.open(classSession.zoomLink, '_blank');
   }
 
+  private loadClassesListener(){
+/*    return this.dataClassService.getAllClasses().pipe(
+
+    )*/
+  }
+
   getTimeUntilClass(date: string): string {
     const diff = new Date(date).getTime() - new Date().getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -68,5 +65,9 @@ export class ClassesComponent implements OnInit {
     if (days > 0) return `In ${days} day${days > 1 ? 's' : ''}`;
     if (hours > 0) return `In ${hours} hour${hours > 1 ? 's' : ''}`;
     return 'Starting soon';
+  }
+
+  bookClass(item: IClassDetails) {
+
   }
 }
