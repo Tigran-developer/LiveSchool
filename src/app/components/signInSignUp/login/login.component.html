@@ -11,7 +11,7 @@
         <form [formGroup]="loginForm" (ngSubmit)="submit$.next()">
           <div class="form-group">
             <label class="form-label">{{ "EMAIL_ADDRESS" | translate}}</label>
-            <input type="email"  class="form-input" autocomplete formControlName="email"
+            <input type="email"  class="form-input" autocomplete="on" formControlName="email"
               UPattern="PLEASE_ENTER_VALID_EMAIL"
               [placeholder]="'ENTER_EMAIL' | translate"
             />

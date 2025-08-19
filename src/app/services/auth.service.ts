@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {ApiPath} from '../../shared/constants/api-path';
 import {IResponse} from '../../shared/interfaces/iResponse';
 import {ICurrentUser} from '../../shared/interfaces/iCurrent-user';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class AuthService {
     this._currentUser = value;
   }
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   register(user: IRegisterUser): Observable<IResponse> {
@@ -117,6 +118,9 @@ export class AuthService {
     if (storedUser) {
       this._currentUser = JSON.parse(storedUser);
       this.isLoggedIn$.next(true);
+/*      if (!this._currentUser?.isTeacher) {
+        this.router.navigate(['pupil/booked-classes'])
+      }*/
     }
   }
 

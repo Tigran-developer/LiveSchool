@@ -13,7 +13,7 @@ import {ISubscriptionPlan} from '../../../../shared/interfaces/iSubscription-pla
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, NotificationsComponent],
+  imports: [CommonModule, FormsModule, NotificationsComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
@@ -53,9 +53,9 @@ export class AdminDashboardComponent implements OnInit {
   newClass = this.getDefaultNewClass();
 
   ngOnInit(): void {
-    this.dataService.pendingTeachers$
+    /*this.dataService.pendingTeachers$
         .pipe(takeUntil(this.destroy$))
-        .subscribe(teachers => (this.pendingTeachers = teachers));
+        .subscribe(teachers => (this.pendingTeachers = teachers));*/
 
     /*this.dataService.classes$
         .pipe(takeUntil(this.destroy$))
@@ -69,12 +69,14 @@ export class AdminDashboardComponent implements OnInit {
         .subscribe(plans => (this.subscriptionPlans = plans));
   }
 
-  approveTeacher(teacherId: number): void {
-    this.dataService.approveTeacher(teacherId);
+  approveTeacher(teacherId: string | undefined): void {
+    if(!teacherId) return;
+    this.dataService.approveTeacher(+teacherId);
   }
 
-  rejectTeacher(teacherId: number): void {
-    this.dataService.rejectTeacher(teacherId);
+  rejectTeacher(teacherId: string | undefined): void {
+    if(!teacherId) return;
+    this.dataService.rejectTeacher(+teacherId);
   }
 
   createClass(): void {

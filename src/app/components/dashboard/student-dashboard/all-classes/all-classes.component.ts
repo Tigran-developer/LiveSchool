@@ -16,7 +16,6 @@ import {ClassStatus} from '../../../../../shared/constants/ClassStatus';
     CommonModule,
     LucideAngularModule,
     FormsModule,
-    RouterLink
   ],
   templateUrl: './all-classes.component.html',
   styleUrl: './all-classes.component.scss'
@@ -30,13 +29,11 @@ export class AllClassesComponent implements OnInit {
   remainingClasses = 5;
 
   constructor(private authService: AuthService,
-              private route: ActivatedRoute,
               private dataClassService: DataClassService) {
   }
 
 
   ngOnInit(): void {
-
     this.availableClasses$ = this.dataClassService.getAllClasses();
     this.nextClass = this.upcomingClasses
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0] || null;
@@ -67,7 +64,9 @@ export class AllClassesComponent implements OnInit {
     return 'Starting soon';
   }
 
-  bookClass(item: IClassDetails) {
+  bookClass(classId: string) {
+    this.dataClassService.bookClass(classId).subscribe(
 
+    )
   }
 }

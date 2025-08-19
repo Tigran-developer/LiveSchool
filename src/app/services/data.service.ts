@@ -12,7 +12,7 @@ import {IClass} from '../../shared/interfaces/iClass';
 export class DataService {
   private authService = inject(AuthService)
 
-  private pendingTeachersSubject = new BehaviorSubject<ITeacher[]>([
+  /*private pendingTeachersSubject = new BehaviorSubject<ITeacher[]>([
     {
       id: '2',
       firstName: 'Emily',
@@ -39,7 +39,7 @@ export class DataService {
       avatar: 'https://images.pexels.com/photos/3184340/pexels-photo-3184340.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
       createdAt: new Date('2025-01-02').toString()
     }
-  ]);
+  ]);*/
 
   private subscriptionPlansSubject = new BehaviorSubject<ISubscriptionPlan[]>([
     {
@@ -88,19 +88,19 @@ export class DataService {
   ]);
 
   // Observables
-  public pendingTeachers$ = this.pendingTeachersSubject.asObservable();
+  /*public pendingTeachers$ = this.pendingTeachersSubject.asObservable();*/
   public subscriptionPlans$ = this.subscriptionPlansSubject.asObservable();
   public notifications$ = this.notificationsSubject.asObservable();
 
   // Methods
   approveTeacher(teacherId: number): void {
-    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId.toString());
-    this.pendingTeachersSubject.next(teachers);
+/*    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId.toString());
+    this.pendingTeachersSubject.next(teachers);*/
   }
 
   rejectTeacher(teacherId: number): void {
-    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId.toString());
-    this.pendingTeachersSubject.next(teachers);
+/*    const teachers = this.pendingTeachersSubject.value.filter(t => t.id !== teacherId.toString());
+    this.pendingTeachersSubject.next(teachers);*/
   }
 
   createClass(newClass: IClass): void {

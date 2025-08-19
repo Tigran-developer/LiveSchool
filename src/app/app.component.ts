@@ -21,13 +21,13 @@ export class AppComponent {
   users$!: Observable<IUser[] | null>;
   classes$!: Observable<IClass[] | null>;
 
-  authService = inject(AuthService);
-  private router = inject(Router);
-  private ngx = inject(TranslateService);
-  private userService = inject(UserService);
-  private dataClassService = inject(DataClassService);
-
-  constructor(){
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+    private ngx: TranslateService,
+    private userService: UserService,
+    private dataClassService: DataClassService,
+  ) {
     this.ngx.addLangs(['am', 'en']);
     this.ngx.setDefaultLang('en');
     this.ngx.use('en');

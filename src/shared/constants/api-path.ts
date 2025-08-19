@@ -10,5 +10,9 @@ export const ApiPath = {
   pupils: '/pupils',
   classes: '/classes',
   student: '/student',
+  teacher: '/teacher',
+  admin: '/admin',
   booked_classes: '/booked_classes',
+  book_class: '/book_class',
+  browse_classes: '/browse_classes',
 };

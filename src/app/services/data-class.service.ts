@@ -5,15 +5,24 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {IClassDetails} from '../../shared/interfaces/iClass-details';
 import {formatDateTime} from '../../shared/functions/functions';
 import {ParamKeys} from '../../shared/constants/param-keys';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataClassService {
-  private http = inject(HttpClient);
+
+  constructor(private http: HttpClient,
+              private authService: AuthService) {
+  }
 
   getAllClasses(): Observable<IClassDetails[] | null> {
-    return this.http.get<IClassDetails[]>(ApiPath.classes).pipe(
+    const studentId = this.authService.currentUser?.id;
+    if (!studentId) {
+      return EMPTY;
+    }
+    const params = new HttpParams().set(ParamKeys.userId, studentId)
+    return this.http.get<IClassDetails[]>(ApiPath.classes + ApiPath.browse_classes, {params}).pipe(
       map(classes => {
         return classes.map(item => {
           return {
@@ -42,6 +51,23 @@ export class DataClassService {
       }),
       catchError(err => {
         console.error('Error fetching classes for student with id => ', studentId, err);
+        return EMPTY;
+      })
+    )
+  }
+
+  bookClass(classId: string): Observable<string | null> {
+    const studentId = this.authService.currentUser?.id;
+    if (!studentId) {
+      return EMPTY;
+    }
+    const body = {
+      classId, studentId,
+    }
+
+    return  this.http.post<string>(ApiPath.classes+ApiPath.book_class, body).pipe(
+      catchError(err => {
+        console.error('Error booking class', err);
         return EMPTY;
       })
     )

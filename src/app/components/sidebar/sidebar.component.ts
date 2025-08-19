@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {AuthService} from "../../services/auth.service";
-import {Subject} from "rxjs";
+import {filter, first, Subject, takeUntil} from "rxjs";
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,7 +20,16 @@ export class SidebarComponent {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {
+    this.activeRoute = router.url;
+
+    this.router.events.pipe(
+      takeUntilDestroyed(),
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.activeRoute = event.urlAfterRedirects;
+    });
+  }
 
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;

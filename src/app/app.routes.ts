@@ -10,9 +10,10 @@ import {AdminDashboardComponent} from './components/dashboard/admin-dashboard/ad
 import {AllClassesComponent} from './components/dashboard/student-dashboard/all-classes/all-classes.component';
 import {StudentDashboardComponent} from './components/dashboard/student-dashboard/student-dashboard.component';
 import {BookedClassesComponent} from './components/dashboard/student-dashboard/booked-classes/booked-classes.component';
+import {loginCanMatchGuard} from '../shared/guards/login-can-match.guard';
 
 export const routes: Routes = [
-  {path: 'login', component: LoginComponent},
+  {path: 'login', component: LoginComponent, canMatch: [loginCanMatchGuard] },
   {path: 'register', component: RegisterComponent},
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: 'forgot-password', component: ForgotPasswordComponent},

@@ -8,6 +8,7 @@ import {AuthService} from '../../../services/auth.service';
 import {Patterns} from '../../../../shared/constants/patterns';
 import {URequiredDirective} from '../../../../shared/directives/u-required.directive';
 import {UPatternDirective} from '../../../../shared/directives/u-pattern.directive';
+import {ApiPath} from '../../../../shared/constants/api-path';
 
 @Component({
   selector: 'app-login',
@@ -69,9 +70,12 @@ export class LoginComponent {
               this.isLoading = false;
               if (response.success) {
                 if(this.authService.currentUser?.isTeacher){
-                  this.router.navigate(['/teacher']);
-                }else {
-                  this.router.navigate(['/pupil']);
+                  this.router.navigate([ApiPath.teacher+'classes']);
+                }else if(this.authService.currentUser?.isStudent) {
+                  this.router.navigate([ApiPath.student+'/booked_classes']);
+                }
+                else if(this.authService.currentUser?.isAdmin) {
+                  this.router.navigate([ApiPath.admin]);
                 }
               } else {
                 response.message

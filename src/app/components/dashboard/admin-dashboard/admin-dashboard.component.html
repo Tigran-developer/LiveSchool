@@ -1,9 +1,4 @@
 <div class="dashboard-layout">
-    <app-sidebar
-            [menuItems]="menuItems"
-            [activeRoute]="activeRoute">
-    </app-sidebar>
-
     <div class="main-content">
         <header class="header">
             <div class="header-left">
@@ -69,10 +64,10 @@
                             </div>
                         </div>
                         <div class="teacher-actions">
-                            <button class="btn btn-success" (click)="approveTeacher(teacher.id || -1)">
+                            <button class="btn btn-success" (click)="approveTeacher(teacher?.id)">
                                 ✓ Approve
                             </button>
-                            <button class="btn btn-danger" (click)="rejectTeacher(teacher.id || -1)">
+                            <button class="btn btn-danger" (click)="rejectTeacher(teacher?.id)">
                                 ✗ Reject
                             </button>
                         </div>

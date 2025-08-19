@@ -5,4 +5,6 @@ export interface ICurrentUser {
   lastName: string,
   phone: string,
   isTeacher: string,
+  isAdmin: string,
+  isStudent: string,
 }
