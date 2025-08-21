@@ -29,7 +29,7 @@
       </div>
       <div class="class-booking">
         <div class="class-price">1 Credit</div>
-        <button class="btn btn-primary" [disabled]="remainingClasses <= 0" (click)="bookClass(item.id)">
+        <button class="btn btn-primary" [disabled]="remainingClasses <= 0" (click)="bookClassEmitter.next(item.id)">
           {{ remainingClasses <= 0 ? 'No Credits' : 'Book Class' }}
         </button>
       </div>

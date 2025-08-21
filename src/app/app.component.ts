@@ -8,6 +8,8 @@ import {DataClassService} from './services/data-class.service';
 import {IClass} from '../shared/interfaces/iClass';
 import {AuthService} from './services/auth.service';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
+import {ApiPath} from '../shared/constants/api-path';
+import {sidebarItems} from '../shared/constants/sidebarItems';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,8 @@ export class AppComponent {
   users$!: Observable<IUser[] | null>;
   classes$!: Observable<IClass[] | null>;
 
+  menuItems: any[] = [];
+
   constructor(
     public authService: AuthService,
     private router: Router,
@@ -33,17 +37,15 @@ export class AppComponent {
     this.ngx.use('en');
   }
 
-  menuItems = [
-    { icon: '📚', label: 'Booked Classes', route: '/pupil/booked-classes' },
-    { icon: '🔍', label: 'All Classes', route: '/pupil/browse-classes' },
-    { icon: '💳', label: 'Subscription', route: '/pupil/subscription' },
-    /*{ icon: '📊', label: 'Dashboard', route: '/pupil' },*/
-    /*{ icon: '📈', label: 'Progress', route: '/pupil/progress' }*/
-  ];
-
   ngOnInit() {
     this.users$ = this.userService.getUsers();
     this.activeRoute = this.router.url;
+    if(this.authService.currentUser?.isAdmin){
+        this.menuItems = sidebarItems.filter(item=> item.role === 'ADMIN')
+    } else if(this.authService.currentUser?.isStudent){
+      this.menuItems = sidebarItems.filter(item=> item.role === 'STUDENT')
+    }else if(this.authService.currentUser?.isTeacher){
+      this.menuItems = sidebarItems.filter(item=> item.role === 'TEACHER')
+    }
   }
-
 }

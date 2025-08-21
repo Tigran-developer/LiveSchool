@@ -6,6 +6,7 @@ import {IClassDetails} from '../../shared/interfaces/iClass-details';
 import {formatDateTime} from '../../shared/functions/functions';
 import {ParamKeys} from '../../shared/constants/param-keys';
 import {AuthService} from './auth.service';
+import {ISimpleAPIResponse} from '../../shared/interfaces/iSimple-API-Response';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,7 @@ export class DataClassService {
     )
   }
 
-  bookClass(classId: string): Observable<string | null> {
+  bookClass(classId: string): Observable<ISimpleAPIResponse | null> {
     const studentId = this.authService.currentUser?.id;
     if (!studentId) {
       return EMPTY;
@@ -65,9 +66,9 @@ export class DataClassService {
       classId, studentId,
     }
 
-    return  this.http.post<string>(ApiPath.classes+ApiPath.book_class, body).pipe(
+    return this.http.post<ISimpleAPIResponse>(ApiPath.classes+ApiPath.book_class, body).pipe(
       catchError(err => {
-        console.error('Error booking class', err);
+        console.error(`Error booking class, classId: ${classId}`, err);
         return EMPTY;
       })
     )

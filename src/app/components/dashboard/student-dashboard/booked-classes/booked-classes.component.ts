@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IClassDetails} from '../../../../../shared/interfaces/iClass-details';
 import {AuthService} from '../../../../services/auth.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {DataClassService} from '../../../../services/data-class.service';
-import {EMPTY, filter, Subject, switchMap, takeUntil, tap} from 'rxjs';
+import {EMPTY, Subject, switchMap, takeUntil, tap} from 'rxjs';
 import {CommonModule} from '@angular/common';
 import {LucideAngularModule} from 'lucide-angular';
 import {FormsModule} from '@angular/forms';
@@ -17,7 +17,9 @@ import {ClassStatus} from '../../../../../shared/constants/ClassStatus';
   imports: [
     CommonModule,
     LucideAngularModule,
-    FormsModule],
+    FormsModule,
+    RouterLink
+  ],
   templateUrl: './booked-classes.component.html',
   styleUrl: './booked-classes.component.scss'
 })

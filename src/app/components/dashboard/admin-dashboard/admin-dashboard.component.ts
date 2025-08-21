@@ -1,10 +1,10 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute, RouterModule} from '@angular/router';
 import {Subject, takeUntil} from "rxjs";
-import {SidebarComponent} from '../../sidebar/sidebar.component';
 import {NotificationsComponent} from '../../notifications/notifications.component';
+import {TeacherManagementComponent} from './teacher-management/teacher-management.component';
 import {DataService} from '../../../services/data.service';
 import {ITeacher} from '../../../../shared/interfaces/iTeacher';
 import {IClassDetails} from '../../../../shared/interfaces/iClass-details';
@@ -13,13 +13,14 @@ import {ISubscriptionPlan} from '../../../../shared/interfaces/iSubscription-pla
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, NotificationsComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NotificationsComponent, TeacherManagementComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
   private dataService = inject(DataService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   private destroy$ = new Subject<void>();
 
@@ -32,16 +33,7 @@ export class AdminDashboardComponent implements OnInit {
     Notifications: '/admin/notifications'
   };
 
-  menuItems = [
-    { icon: '📊', label: 'Dashboard', route: this.ROUTES.Dashboard },
-    { icon: '👨‍🏫', label: 'Teachers', route: this.ROUTES.Teachers },
-    { icon: '👩‍🎓', label: 'Students', route: this.ROUTES.Students },
-    { icon: '📚', label: 'Classes', route: this.ROUTES.Classes },
-    { icon: '💳', label: 'Plans', route: this.ROUTES.Plans },
-    { icon: '🔔', label: 'Notifications', route: this.ROUTES.Notifications }
-  ];
-
-  activeRoute = this.ROUTES.Students;
+  activeRoute = this.ROUTES.Dashboard;
   pendingTeachers: ITeacher[] = [];
   classes: IClassDetails[] = [];
   subscriptionPlans: ISubscriptionPlan[] = [];
@@ -53,6 +45,16 @@ export class AdminDashboardComponent implements OnInit {
   newClass = this.getDefaultNewClass();
 
   ngOnInit(): void {
+    this.route.params.pipe(
+      takeUntil(this.destroy$))
+      .subscribe(params => {
+      if (params['section']) {
+        this.activeRoute = `/admin/${params['section']}`;
+      } else {
+        this.activeRoute = this.ROUTES.Dashboard;
+      }
+    });
+
     /*this.dataService.pendingTeachers$
         .pipe(takeUntil(this.destroy$))
         .subscribe(teachers => (this.pendingTeachers = teachers));*/
@@ -112,19 +114,27 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get isDashboardRoute() {
-    return this.router.url === this.ROUTES.Dashboard;
+    return this.activeRoute === this.ROUTES.Dashboard;
   }
 
   get isTeachersRoute() {
-    return this.router.url === this.ROUTES.Teachers;
+    return this.activeRoute === this.ROUTES.Teachers;
+  }
+
+  get isStudentsRoute() {
+    return this.activeRoute === this.ROUTES.Students;
   }
 
   get isClassesRoute() {
-    return this.router.url === this.ROUTES.Classes;
+    return this.activeRoute === this.ROUTES.Classes;
   }
 
   get isPlansRoute() {
-    return this.router.url === this.ROUTES.Plans;
+    return this.activeRoute === this.ROUTES.Plans;
+  }
+
+  get isNotificationsRoute() {
+    return this.activeRoute === this.ROUTES.Notifications;
   }
 
   private getDefaultNewClass() {

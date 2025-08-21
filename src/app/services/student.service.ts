@@ -21,4 +21,12 @@ export class StudentService {
       })
     )
   }
+/*  getStudentsTotalNumber(): Observable<IStudent | null> {
+    return this.http.get<IStudent>(ApiPath.pupils+ApiPath.total_numbers).pipe(
+      catchError(err => {
+        console.error('Error fetching classes for student with id => ', userId, err);
+        return of(null)
+      })
+    )
+  }*/
 }

@@ -25,8 +25,8 @@ export const routes: Routes = [
   {
     path: 'pupil', component: StudentDashboardComponent,children: [
       {path: 'classes', component: AllClassesComponent},
-      {path: 'booked-classes', component: BookedClassesComponent},
-      {path: 'browse-classes', component: AllClassesComponent},
+      {path: 'booked_classes', component: BookedClassesComponent},
+      {path: 'browse_classes', component: AllClassesComponent},
       {path: 'subscription-plans', component: AllClassesComponent}
     ]
   },
