@@ -149,54 +149,79 @@
       <span class="results-count">{{ filteredTeachers.length }} teacher(s) found</span>
     </div>
 
-    <div class="teachers-grid">
-      <div *ngFor="let teacher of filteredTeachers" class="teacher-card">
-        <div class="teacher-header">
+    <div class="teachers-table">
+      <div class="table-header">
+        <div class="header-cell">Teacher</div>
+        <div class="header-cell">Specialization & Experience</div>
+        <div class="header-cell">Status</div>
+        <div class="header-cell">Rating & Classes</div>
+        <div class="header-cell">Hourly Rate</div>
+        <div class="header-cell">Actions</div>
+      </div>
+
+      <div
+        *ngFor="let teacher of filteredTeachers"
+        class="table-row"
+        (click)="viewTeacherDetails(teacher)"
+        [class.clickable]="true"
+      >
+        <div class="cell teacher-info-cell">
           <div class="teacher-avatar">
             <img [src]="teacher.avatar" [alt]="teacher.firstName" *ngIf="teacher.avatar">
             <div class="avatar-placeholder" *ngIf="!teacher.avatar">
               {{ teacher.firstName.charAt(0) }}{{ teacher.lastName.charAt(0) }}
             </div>
           </div>
-          <div class="teacher-status">
-            <span class="status-badge" [ngClass]="getStatusClass(teacher.status)">
-              {{ teacher.status }}
+          <div class="teacher-details">
+            <h4 class="teacher-name">{{ teacher.firstName }} {{ teacher.lastName }}</h4>
+            <p class="teacher-email">{{ teacher.email }}</p>
+            <p class="teacher-subjects" *ngIf="teacher.subjects && teacher.subjects.length > 0">
+              {{ teacher.subjects.join(', ') }}
+            </p>
+          </div>
+        </div>
+
+        <div class="cell">
+          <div class="specialization-experience">
+            <span class="specialization">{{ teacher.specialization }}</span>
+            <span class="experience-badge">
+              {{ teacher.experience }} years
             </span>
           </div>
         </div>
 
-        <div class="teacher-info">
-          <h3 class="teacher-name">{{ teacher.firstName }} {{ teacher.lastName }}</h3>
-          <p class="teacher-email">{{ teacher.email }}</p>
-          <p class="teacher-specialization">{{ teacher.specialization }}</p>
-          <p class="teacher-experience">{{ teacher.experience }} years experience</p>
-          <p class="teacher-rate">${{ teacher.hourlyRate }}/hour</p>
+        <div class="cell">
+          <span class="status-badge" [ngClass]="getStatusClass(teacher.status)">
+            {{ teacher.status }}
+          </span>
+        </div>
 
-          <div class="teacher-stats" *ngIf="teacher.totalClasses !== undefined">
-            <span class="stat">
-              <strong>{{ teacher.totalClasses }}</strong> classes
+        <div class="cell">
+          <div class="rating-classes">
+            <span class="rating" *ngIf="teacher.rating">
+              ⭐ {{ teacher.rating }}/5
             </span>
-            <span class="stat" *ngIf="teacher.rating">
-              <strong>{{ teacher.rating }}</strong> ⭐ rating
+            <span class="total-classes" *ngIf="teacher.totalClasses">
+              {{ teacher.totalClasses }} classes
             </span>
-          </div>
-
-          <p class="teacher-bio" *ngIf="teacher.bio">{{ teacher.bio }}</p>
-
-          <div class="teacher-subjects" *ngIf="teacher.subjects && teacher.subjects.length > 0">
-            <span class="subject-tag" *ngFor="let subject of teacher.subjects">{{ subject }}</span>
           </div>
         </div>
 
-        <div class="teacher-actions">
-          <div class="status-actions">
+        <div class="cell">
+          <div class="hourly-rate">
+            <span class="rate-amount">${{ teacher.hourlyRate }}/hr</span>
+          </div>
+        </div>
+
+        <div class="cell actions-cell" (click)="$event.stopPropagation()">
+          <div class="quick-actions">
             <button
               class="btn btn-sm btn-success"
               (click)="changeTeacherStatus(teacher.id!, TeacherStatus.ACTIVE)"
               *ngIf="teacher.status !== TeacherStatus.ACTIVE"
               title="Activate Teacher"
             >
-              ✓ Activate
+              ✓
             </button>
             <button
               class="btn btn-sm btn-warning"
@@ -204,24 +229,24 @@
               *ngIf="teacher.status === TeacherStatus.ACTIVE"
               title="Deactivate Teacher"
             >
-              ⏸️ Deactivate
+              ⏸️
             </button>
             <button
               class="btn btn-sm btn-info"
               (click)="changeTeacherStatus(teacher.id!, TeacherStatus.PENDING)"
               *ngIf="teacher.status !== TeacherStatus.PENDING"
-              title="Set to Pending"
+              title="Mark as Pending"
             >
-              ⏳ Set Pending
+              ⏳
             </button>
           </div>
 
           <div class="edit-actions">
             <button class="btn btn-sm btn-primary" (click)="editTeacher(teacher)" title="Edit Teacher">
-              ✏️ Edit
+              ✏️
             </button>
             <button class="btn btn-sm btn-danger" (click)="deleteTeacher(teacher.id!)" title="Delete Teacher">
-              🗑️ Delete
+              🗑️
             </button>
           </div>
         </div>
@@ -230,6 +255,128 @@
 
     <div class="no-results" *ngIf="filteredTeachers.length === 0">
       <p>No teachers found matching your criteria.</p>
+    </div>
+  </div>
+
+  <!-- Teacher Details View -->
+  <div class="teacher-details-view" *ngIf="selectedTeacherForView && !showAddForm && !showEditForm">
+    <div class="details-header">
+      <button class="btn btn-secondary back-btn" (click)="backToList()">
+        ← Back to List
+      </button>
+      <h2>Teacher Details: {{ selectedTeacherForView.firstName }} {{ selectedTeacherForView.lastName }}</h2>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="editTeacher(selectedTeacherForView)">
+          ✏️ Edit Teacher
+        </button>
+      </div>
+    </div>
+
+    <div class="details-content">
+      <div class="teacher-profile">
+        <div class="profile-header">
+          <div class="teacher-avatar-large">
+            <img [src]="selectedTeacherForView.avatar" [alt]="selectedTeacherForView.firstName" *ngIf="selectedTeacherForView.avatar">
+            <div class="avatar-placeholder-large" *ngIf="!selectedTeacherForView.avatar">
+              {{ selectedTeacherForView.firstName.charAt(0) }}{{ selectedTeacherForView.lastName.charAt(0) }}
+            </div>
+          </div>
+          <div class="profile-info">
+            <h1 class="teacher-name-large">{{ selectedTeacherForView.firstName }} {{ selectedTeacherForView.lastName }}</h1>
+            <p class="teacher-email-large">{{ selectedTeacherForView.email }}</p>
+            <div class="status-info">
+              <span class="status-badge-large" [ngClass]="getStatusClass(selectedTeacherForView.status)">
+                {{ selectedTeacherForView.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-section">
+          <h3>Professional Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Specialization:</label>
+              <span>{{ selectedTeacherForView.specialization }}</span>
+            </div>
+            <div class="info-item">
+              <label>Experience:</label>
+              <span>{{ selectedTeacherForView.experience }} years</span>
+            </div>
+            <div class="info-item">
+              <label>Hourly Rate:</label>
+              <span>${{ selectedTeacherForView.hourlyRate }}/hour</span>
+            </div>
+<!--            <div class="info-item" *ngIf="selectedTeacherForView.isApproved !== undefined">
+              <label>Approved:</label>
+              <span>{{ selectedTeacherForView.isApproved ? 'Yes' : 'No' }}</span>
+            </div>-->
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Performance Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-card" *ngIf="selectedTeacherForView.totalClasses !== undefined">
+              <div class="stat-number">{{ selectedTeacherForView.totalClasses }}</div>
+              <div class="stat-label">Total Classes</div>
+            </div>
+            <div class="stat-card" *ngIf="selectedTeacherForView.rating">
+              <div class="stat-number">{{ selectedTeacherForView.rating }}</div>
+              <div class="stat-label">Rating (5★)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">${{ selectedTeacherForView.hourlyRate }}</div>
+              <div class="stat-label">Per Hour</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="selectedTeacherForView.subjects && selectedTeacherForView.subjects.length > 0">
+          <h3>Teaching Subjects</h3>
+          <div class="subjects-tags-large">
+            <span class="subject-tag-large" *ngFor="let subject of selectedTeacherForView.subjects">
+              {{ subject }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="selectedTeacherForView.bio">
+          <h3>Biography</h3>
+          <div class="bio-content">
+            <p>{{ selectedTeacherForView.bio }}</p>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Status Management</h3>
+          <div class="status-actions-large">
+            <button
+              class="btn btn-success"
+              (click)="changeTeacherStatus(selectedTeacherForView.id!, TeacherStatus.ACTIVE)"
+              *ngIf="selectedTeacherForView.status !== TeacherStatus.ACTIVE"
+            >
+              ✓ Activate Teacher
+            </button>
+            <button
+              class="btn btn-warning"
+              (click)="changeTeacherStatus(selectedTeacherForView.id!, TeacherStatus.INACTIVE)"
+              *ngIf="selectedTeacherForView.status === TeacherStatus.ACTIVE"
+            >
+              ⏸️ Deactivate Teacher
+            </button>
+            <button
+              class="btn btn-info"
+              (click)="changeTeacherStatus(selectedTeacherForView.id!, TeacherStatus.PENDING)"
+              *ngIf="selectedTeacherForView.status !== TeacherStatus.PENDING"
+            >
+              ⏳ Mark as Pending
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

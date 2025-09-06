@@ -30,7 +30,7 @@
           <div class="class-details">
             <div class="detail-item">
               <span class="detail-icon">👨‍🏫</span>
-              <span>{{ item.teacher.firstName + ' ' + item.teacher.lastName}}</span>
+              <span>{{ item.teacher?.firstName + ' ' + item.teacher?.lastName}}</span>
             </div>
             <div class="detail-item">
               <span class="detail-icon">📅</span>
@@ -76,7 +76,7 @@
       <div *ngFor="let item of completedClasses" class="history-item">
         <div class="history-info">
           <h4>{{ item.title }}</h4>
-          <p class="teacher-name">with {{ item.teacher.firstName + ' ' + item.teacher.lastName}}</p>
+          <p class="teacher-name">with {{ item.teacher?.firstName + ' ' + item.teacher?.lastName}}</p>
           <p class="class-date">{{ item.startTime }}</p>
         </div>
         <div class="history-actions">

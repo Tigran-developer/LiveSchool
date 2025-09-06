@@ -1,10 +1,12 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {Router, ActivatedRoute, RouterModule} from '@angular/router';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {Subject, takeUntil} from "rxjs";
 import {NotificationsComponent} from '../../notifications/notifications.component';
 import {TeacherManagementComponent} from './teacher-management/teacher-management.component';
+import {StudentManagementComponent} from './student-management/student-management.component';
+import {ClassesManagementComponent} from './classes-management/classes-management.component';
 import {DataService} from '../../../services/data.service';
 import {ITeacher} from '../../../../shared/interfaces/iTeacher';
 import {IClassDetails} from '../../../../shared/interfaces/iClass-details';
@@ -13,7 +15,7 @@ import {ISubscriptionPlan} from '../../../../shared/interfaces/iSubscription-pla
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NotificationsComponent, TeacherManagementComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NotificationsComponent, TeacherManagementComponent, StudentManagementComponent, ClassesManagementComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
@@ -27,7 +29,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly ROUTES = {
     Dashboard: '/admin',
     Teachers: '/admin/teachers',
-    Students: '/admin/pupils',
+    Students: '/admin/students',
     Classes: '/admin/classes',
     Plans: '/admin/plans',
     Notifications: '/admin/notifications'
@@ -66,19 +68,19 @@ export class AdminDashboardComponent implements OnInit {
           this.totalClasses = classes.length;
         });*/
 
-    this.dataService.subscriptionPlans$
+    /*this.dataService.subscriptionPlans$
         .pipe(takeUntil(this.destroy$))
-        .subscribe(plans => (this.subscriptionPlans = plans));
+        .subscribe(plans => (this.subscriptionPlans = plans));*/
   }
 
   approveTeacher(teacherId: string | undefined): void {
     if(!teacherId) return;
-    this.dataService.approveTeacher(+teacherId);
+    /*this.dataService.approveTeacher(+teacherId);*/
   }
 
   rejectTeacher(teacherId: string | undefined): void {
     if(!teacherId) return;
-    this.dataService.rejectTeacher(+teacherId);
+    /*this.dataService.rejectTeacher(+teacherId);*/
   }
 
   createClass(): void {
@@ -100,7 +102,7 @@ export class AdminDashboardComponent implements OnInit {
   deleteClass(classId: string): void {
     // TODO: Replace confirm() with modal confirmation for better UX
     if (confirm('Are you sure you want to delete this class?')) {
-      this.dataService.deleteClass(classId);
+      /*this.dataService.deleteClass(classId);*/
     }
   }
 

@@ -1,0 +1,613 @@
+<div class="classes-management">
+  <div class="header">
+    <div class="filter-section justify-between" *ngIf="!showAddForm && !showEditForm">
+      <div class="search-box">
+        <input type="text" class="search-input" placeholder="Search classes..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()">
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <div class="filter-controls">
+        <!--<select [(ngModel)]="selectedStatus" (change)="onStatusChange()" class="status-filter">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>-->
+
+        <select [(ngModel)]="selectedSubject" (change)="onSubjectChange()" class="subject-filter">
+          <option *ngFor="let option of subjectOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+
+        <select [(ngModel)]="selectedDifficulty" (change)="onDifficultyChange()" class="difficulty-filter">
+          <option *ngFor="let option of difficultyOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-primary" (click)="showAddForm = true" *ngIf="!showAddForm && !showEditForm">
+        <span>+</span> Add New Class
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Class Form -->
+  <div class="form-container" *ngIf="showAddForm">
+    <div class="form-card">
+      <h3>Add New Class</h3>
+      <form (ngSubmit)="addClass()" #addForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Class Title *</label>
+            <input type="text" [(ngModel)]="newClass.title" name="title" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Subject *</label>
+            <select [(ngModel)]="newClass.subject" name="subject" required class="form-input">
+              <option value="">Select Subject</option>
+              <option *ngFor="let option of subjectOptions" [value]="option.value" [hidden]="option.value === 'all'">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea [(ngModel)]="newClass.description" name="description" rows="3" required class="form-input"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Time *</label>
+            <input type="datetime-local" [(ngModel)]="newClass.startTime" name="startTime" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>End Time *</label>
+            <input type="datetime-local" [(ngModel)]="newClass.endTime" name="endTime" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duration (minutes) *</label>
+            <input type="number" [(ngModel)]="newClass.durationInMinutes" name="durationInMinutes" min="15" step="15" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Max Participants *</label>
+            <input type="number" [(ngModel)]="newClass.maxParticipants" name="maxParticipants" min="1" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teacher ID *</label>
+            <input type="text" [(ngModel)]="newClass.teacherId" name="teacherId" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Teacher Name *</label>
+            <input type="text" [(ngModel)]="newClass.teacherId" name="teacherName" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price ($) *</label>
+            <input type="number" [(ngModel)]="newClass.price" name="price" min="0" step="0.01" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Difficulty *</label>
+            <select [(ngModel)]="newClass.difficultyId" name="difficulty" required class="form-input">
+              <option value="BEGINNER">Beginner</option>
+              <option value="INTERMEDIATE">Intermediate</option>
+              <option value="ADVANCED">Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Status</label>
+            <select [(ngModel)]="newClass.status" name="status" class="form-input">
+              <option [value]="ClassStatus.SCHEDULED">Scheduled</option>
+              <option [value]="ClassStatus.ACTIVE">Active</option>
+              <option [value]="ClassStatus.INACTIVE">Inactive</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Class Type</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="newClass.isOnline" name="isOnline">
+                Online Class
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="newClass.isRecurring" name="isRecurring">
+                Recurring Class
+              </label>
+            </div>
+          </div>
+        </div>
+
+<!--        <div class="form-group" *ngIf="!newClass.isOnline">
+          <label>Location</label>
+          <input type="text" [(ngModel)]="newClass.location" name="location" class="form-input">
+        </div>-->
+
+        <div class="form-group" *ngIf="newClass.isOnline">
+          <label>Zoom Link</label>
+          <input type="url" [(ngModel)]="newClass.zoomLink" name="zoomLink" class="form-input">
+        </div>
+
+<!--        <div class="form-group">
+          <label>Tags</label>
+          <div class="tags-container">
+            <div class="tags-list">
+              <span *ngFor="let tag of newClass.tags" class="tag">
+                {{ tag }}
+                <button type="button" class="remove-tag" (click)="removeTag(tag)">×</button>
+              </span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="addTag()">+ Add Tag</button>
+          </div>
+        </div>-->
+
+<!--
+        <div class="form-group">
+          <label>Materials</label>
+          <div class="materials-container">
+            <div class="materials-list">
+              <span *ngFor="let material of newClass.materials" class="material">
+                {{ material }}
+                <button type="button" class="remove-material" (click)="removeMaterial(material)">×</button>
+              </span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="addMaterial()">+ Add Material</button>
+          </div>
+        </div>
+-->
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="newClass.notes" name="notes" rows="2" class="form-input"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="!addForm.valid">Add Class</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Class Form -->
+  <div class="form-container" *ngIf="showEditForm">
+    <div class="form-card">
+      <h3>Edit Class: {{ selectedClass?.title }}</h3>
+      <form (ngSubmit)="updateClass()" #editForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Class Title *</label>
+            <input type="text" [(ngModel)]="newClass.title" name="title" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Subject *</label>
+            <select [(ngModel)]="newClass.subject" name="subject" required class="form-input">
+              <option value="">Select Subject</option>
+              <option *ngFor="let option of subjectOptions" [value]="option.value" [hidden]="option.value === 'all'">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea [(ngModel)]="newClass.description" name="description" rows="3" required class="form-input"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Time *</label>
+            <input type="datetime-local" [(ngModel)]="newClass.startTime" name="startTime" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>End Time *</label>
+            <input type="datetime-local" [(ngModel)]="newClass.endTime" name="endTime" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duration (minutes) *</label>
+            <input type="number" [(ngModel)]="newClass.durationInMinutes" name="durationInMinutes" min="15" step="15" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Max Participants *</label>
+            <input type="number" [(ngModel)]="newClass.maxParticipants" name="maxParticipants" min="1" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teacher ID *</label>
+            <input type="text" [(ngModel)]="newClass.teacherId" name="teacherId" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Teacher Name *</label>
+            <input type="text" [(ngModel)]="newClass.teacherId" name="teacherName" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price ($) *</label>
+            <input type="number" [(ngModel)]="newClass.price" name="price" min="0" step="0.01" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Difficulty *</label>
+            <select [(ngModel)]="newClass.difficultyId" name="difficulty" required class="form-input">
+              <option value="BEGINNER">Beginner</option>
+              <option value="INTERMEDIATE">Intermediate</option>
+              <option value="ADVANCED">Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Status</label>
+            <select [(ngModel)]="newClass.status" name="status" class="form-input">
+              <option [value]="ClassStatus.SCHEDULED">Scheduled</option>
+              <option [value]="ClassStatus.ACTIVE">Active</option>
+              <option [value]="ClassStatus.INACTIVE">Inactive</option>
+              <option [value]="ClassStatus.COMPLETED">Completed</option>
+              <option [value]="ClassStatus.CANCELLED">Cancelled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Class Type</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="newClass.isOnline" name="isOnline">
+                Online Class
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="newClass.isRecurring" name="isRecurring">
+                Recurring Class
+              </label>
+            </div>
+          </div>
+        </div>
+
+<!--        <div class="form-group" *ngIf="!newClass.isOnline">
+          <label>Location</label>
+          <input type="text" [(ngModel)]="newClass.location" name="location" class="form-input">
+        </div>
+
+        <div class="form-group" *ngIf="newClass.isOnline">
+          <label>Zoom Link</label>
+          <input type="url" [(ngModel)]="newClass.zoomLink" name="zoomLink" class="form-input">
+        </div>-->
+
+        <!--<div class="form-group">
+          <label>Tags</label>
+          <div class="tags-container">
+            <div class="tags-list">
+              <span *ngFor="let tag of newClass.tags" class="tag">
+                {{ tag }}
+                <button type="button" class="remove-tag" (click)="removeTag(tag)">×</button>
+              </span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="addTag()">+ Add Tag</button>
+          </div>
+        </div>-->
+
+<!--        <div class="form-group">
+          <label>Materials</label>
+          <div class="materials-container">
+            <div class="materials-list">
+              <span *ngFor="let material of newClass.materials" class="material">
+                {{ material }}
+                <button type="button" class="remove-material" (click)="removeMaterial(material)">×</button>
+              </span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="addMaterial()">+ Add Material</button>
+          </div>
+        </div>-->
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea [(ngModel)]="newClass.notes" name="notes" rows="2" class="form-input"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="!editForm.valid">Update Class</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Classes List -->
+  <div class="classes-list" *ngIf="!showAddForm && !showEditForm">
+    <div class="list-header">
+      <span class="results-count">{{ filteredClasses.length }} class(es) found</span>
+    </div>
+
+    <div class="classes-table">
+      <div class="table-header">
+        <div class="header-cell">Class</div>
+        <div class="header-cell">Subject & Teacher</div>
+        <div class="header-cell">Schedule</div>
+        <div class="header-cell">Status & Capacity</div>
+        <div class="header-cell">Price & Difficulty</div>
+        <div class="header-cell">Actions</div>
+      </div>
+
+      <div
+        *ngFor="let classItem of filteredClasses"
+        class="table-row"
+        (click)="viewClassDetails(classItem)"
+        [class.clickable]="true"
+      >
+        <div class="cell class-info-cell">
+          <div class="class-icon">
+            <span class="icon">📚</span>
+          </div>
+          <!--<div class="class-details">
+            <h4 class="class-title">{{ classItem.title }}</h4>
+            <p class="class-description">{{ classItem.description | slice:0:60 }}{{ classItem.description.length > 60 ? '...' : '' }}</p>
+            <div class="class-tags" *ngIf="classItem.tags && classItem.tags.length > 0">
+              <span class="tag-small" *ngFor="let tag of classItem.tags.slice(0, 2)">{{ tag }}</span>
+              <span class="tag-more" *ngIf="classItem.tags.length > 2">+{{ classItem.tags.length - 2 }}</span>
+            </div>
+          </div>-->
+        </div>
+
+        <div class="cell">
+          <div class="subject-teacher">
+            <span class="subject">{{ classItem.subject }}</span>
+            <span class="teacher-name">{{ classItem.teacherId }}</span>
+          </div>
+        </div>
+
+        <div class="cell">
+          <div class="schedule-info">
+            <span class="date">{{ formatDateTime(classItem.startTime) | slice:0:10 }}</span>
+            <span class="time">{{ formatDateTime(classItem.startTime) | slice:11:16 }}</span>
+            <span class="duration">{{ classItem.durationInMinutes }}min</span>
+          </div>
+        </div>
+
+      <!--  <div class="cell">
+          <div class="status-capacity">
+            <span class="status-badge" [ngClass]="getStatusClass(classItem.status)">
+              {{ classItem.status }}
+            </span>
+            <span class="capacity">{{ classItem.currentParticipants }}/{{ classItem.maxParticipants }}</span>
+          </div>
+        </div>-->
+
+        <div class="cell">
+          <div class="price-difficulty">
+            <span class="price">${{ classItem.price }}</span>
+            <span class="difficulty-badge" [ngClass]="getDifficultyClass(classItem.difficultyId)">
+              {{ classItem.difficultyId }}
+            </span>
+          </div>
+        </div>
+
+        <div class="cell actions-cell" (click)="$event.stopPropagation()">
+          <div class="quick-actions">
+            <button
+              class="btn btn-sm btn-success"
+              (click)="changeClassStatus(classItem.id!, ClassStatus.ACTIVE)"
+              *ngIf="classItem.status !== ClassStatus.ACTIVE && classItem.status !== ClassStatus.COMPLETED"
+              title="Activate Class"
+            >
+              ✓
+            </button>
+            <button
+              class="btn btn-sm btn-warning"
+              (click)="changeClassStatus(classItem.id!, ClassStatus.INACTIVE)"
+              *ngIf="classItem.status === ClassStatus.ACTIVE"
+              title="Deactivate Class"
+            >
+              ⏸️
+            </button>
+            <button
+              class="btn btn-sm btn-info"
+              (click)="changeClassStatus(classItem.id!, ClassStatus.SCHEDULED)"
+              *ngIf="classItem.status !== ClassStatus.SCHEDULED"
+              title="Mark as Scheduled"
+            >
+              📅
+            </button>
+          </div>
+
+          <div class="edit-actions">
+            <button class="btn btn-sm btn-primary" (click)="editClass(classItem)" title="Edit Class">
+              ✏️
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteClass(classItem.id!)" title="Delete Class">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" *ngIf="filteredClasses.length === 0">
+      <p>No classes found matching your criteria.</p>
+    </div>
+  </div>
+
+  <!-- Class Details View -->
+  <div class="class-details-view" *ngIf="selectedClassForView && !showAddForm && !showEditForm">
+    <div class="details-header">
+      <button class="btn btn-secondary back-btn" (click)="backToList()">
+        ← Back to List
+      </button>
+      <h2>Class Details: {{ selectedClassForView.title }}</h2>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="editClass(selectedClassForView)">
+          ✏️ Edit Class
+        </button>
+      </div>
+    </div>
+
+    <div class="details-content">
+      <div class="class-profile">
+        <div class="profile-header">
+          <div class="class-icon-large">
+            <span class="icon-large">📚</span>
+          </div>
+          <div class="profile-info">
+            <h1 class="class-title-large">{{ selectedClassForView.title }}</h1>
+            <p class="class-subject-large">{{ selectedClassForView.subject }}</p>
+            <div class="status-info">
+              <!--<span class="status-badge-large" [ngClass]="getStatusClass(selectedClassForView.status)">-->
+              <span class="status-badge-large">
+                {{ selectedClassForView.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-section">
+          <h3>Class Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Description:</label>
+              <span>{{ selectedClassForView.description }}</span>
+            </div>
+            <div class="info-item">
+              <label>Teacher:</label>
+              <span>{{ selectedClassForView.teacherId }}</span>
+            </div>
+            <div class="info-item">
+              <label>Difficulty:</label>
+              <span class="difficulty-badge-large" [ngClass]="getDifficultyClass(selectedClassForView.difficultyId)">
+                {{ selectedClassForView.difficultyId }}
+              </span>
+            </div>
+            <div class="info-item">
+              <label>Price:</label>
+              <span>${{ selectedClassForView.price }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Schedule & Duration</h3>
+          <div class="schedule-grid">
+            <div class="schedule-item">
+              <label>Start Time:</label>
+              <span>{{ formatDateTime(selectedClassForView.startTime) }}</span>
+            </div>
+            <div class="schedule-item">
+              <label>End Time:</label>
+              <span>{{ formatDateTime(selectedClassForView.endTime) }}</span>
+            </div>
+            <div class="schedule-item">
+              <label>Duration:</label>
+              <span>{{ selectedClassForView.durationInMinutes }} minutes</span>
+            </div>
+            <div class="schedule-item">
+              <label>Recurring:</label>
+              <span>{{ selectedClassForView.isRecurring ? 'Yes' : 'No' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Capacity & Enrollment</h3>
+          <div class="capacity-grid">
+            <div class="capacity-item">
+              <label>Max Participants:</label>
+              <span>{{ selectedClassForView.maxParticipants }}</span>
+            </div>
+            <div class="capacity-item">
+              <label>Current Participants:</label>
+              <span>{{ 'selectedClassForView.currentParticipants' }}</span>
+            </div>
+            <div class="capacity-item">
+              <label>Available Spots:</label>
+              <span>{{ 'selectedClassForView.maxParticipants - selectedClassForView.currentParticipants' }}</span>
+            </div>
+            <div class="capacity-item">
+              <label>Class Type:</label>
+              <span>{{ selectedClassForView.isOnline ? 'Online' : 'In-Person' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!--<div class="detail-section" *ngIf="selectedClassForView.tags && selectedClassForView.tags.length > 0">
+          <h3>Class Tags</h3>
+          <div class="tags-tags-large">
+            <span class="tag-tag-large" *ngFor="let tag of selectedClassForView.tags">
+              {{ tag }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="selectedClassForView.materials && selectedClassForView.materials.length > 0">
+          <h3>Required Materials</h3>
+          <div class="materials-list-large">
+            <span class="material-item-large" *ngFor="let material of selectedClassForView.materials">
+              {{ material }}
+            </span>
+          </div>
+        </div>-->
+
+        <div class="detail-section" *ngIf="selectedClassForView.notes">
+          <h3>Additional Notes</h3>
+          <div class="notes-content">
+            <p>{{ selectedClassForView.notes }}</p>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Status Management</h3>
+          <div class="status-actions-large">
+            <button
+              class="btn btn-success"
+              (click)="changeClassStatus(selectedClassForView.id!, ClassStatus.ACTIVE)"
+              *ngIf="selectedClassForView.status !== ClassStatus.ACTIVE && selectedClassForView.status !== ClassStatus.COMPLETED"
+            >
+              ✓ Activate Class
+            </button>
+            <button
+              class="btn btn-warning"
+              (click)="changeClassStatus(selectedClassForView.id!, ClassStatus.INACTIVE)"
+              *ngIf="selectedClassForView.status === ClassStatus.ACTIVE"
+            >
+              ⏸️ Deactivate Class
+            </button>
+            <button
+              class="btn btn-info"
+              (click)="changeClassStatus(selectedClassForView.id!, ClassStatus.SCHEDULED)"
+              *ngIf="selectedClassForView.status !== ClassStatus.SCHEDULED"
+            >
+              📅 Mark as Scheduled
+            </button>
+            <button
+              class="btn btn-secondary"
+              (click)="changeClassStatus(selectedClassForView.id!, ClassStatus.COMPLETED)"
+              *ngIf="selectedClassForView.status !== ClassStatus.COMPLETED"
+            >
+              ✅ Mark as Completed
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

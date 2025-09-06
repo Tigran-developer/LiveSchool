@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {CommonModule} from '@angular/common';
@@ -28,21 +28,34 @@ export class RegisterComponent {
   registerForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.pattern(Patterns.email)]],
       phone: ['', [Validators.required, Validators.pattern(Patterns.phone)]],
-      isTeacher: [false],
+      userType: ['',  [Validators.required]],
       password: ['', [Validators.required, Validators.pattern(Patterns.password)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: passwordMatchValidator, updateOn: "blur"});
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.cdr.detectChanges();
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+    this.cdr.detectChanges();
   }
 
   onSubmit(): void {

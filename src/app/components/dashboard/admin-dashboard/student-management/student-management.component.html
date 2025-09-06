@@ -1,0 +1,564 @@
+<div class="student-management">
+  <div class="header">
+    <div class="filter-section justify-between controls" *ngIf="!showAddForm && !showEditForm">
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search students..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          class="search-input"
+        >
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <div class="filter-controls">
+        <select [(ngModel)]="selectedStatus" (change)="onStatusChange()" class="status-filter">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+
+        <select [(ngModel)]="selectedGrade" (change)="onGradeChange()" class="grade-filter">
+          <option *ngFor="let option of gradeOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="showAddForm = true" *ngIf="!showAddForm && !showEditForm">
+      <span>+</span> Add New Student
+    </button>
+  </div>
+
+  <!-- Add Student Form -->
+  <div class="form-container" *ngIf="showAddForm">
+    <div class="form-card">
+      <h3>Add New Student</h3>
+      <form (ngSubmit)="addStudent()" #addForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" [(ngModel)]="newStudent.firstName" name="firstName" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" [(ngModel)]="newStudent.lastName" name="lastName" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" [(ngModel)]="newStudent.email" name="email" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Age *</label>
+            <input type="number" [(ngModel)]="newStudent.age" name="age" min="5" max="100" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Grade *</label>
+            <select [(ngModel)]="newStudent.grade" name="grade" required class="form-input">
+              <option value="">Select Grade</option>
+              <option value="Elementary">Elementary</option>
+              <option value="Middle School">Middle School</option>
+              <option value="High School">High School</option>
+              <option value="College">College</option>
+              <option value="Adult">Adult</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rank *</label>
+            <select [(ngModel)]="newStudent.rank" name="rank" required class="form-input">
+              <option *ngFor="let rank of rankOptions" [value]="rank">{{ rank }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Available Classes</label>
+            <input type="number" [(ngModel)]="newStudent.availableClasses" name="availableClasses" min="0" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select [(ngModel)]="newStudent.status" name="status" class="form-input">
+              <option [value]="StudentStatus.ACTIVE">Active</option>
+              <option [value]="StudentStatus.INACTIVE">Inactive</option>
+              <option [value]="StudentStatus.SUSPENDED">Suspended</option>
+              <option [value]="StudentStatus.GRADUATED">Graduated</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Parent Email</label>
+<!--
+            <input type="email" [(ngModel)]="newStudent.parentEmail" name="parentEmail" class="form-input">
+-->
+          </div>
+          <div class="form-group">
+            <label>Parent Phone</label>
+<!--
+            <input type="tel" [(ngModel)]="newStudent.parentPhone" name="parentPhone" class="form-input">
+-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Emergency Contact</label>
+<!--
+          <input type="tel" [(ngModel)]="newStudent.emergencyContact" name="emergencyContact" class="form-input">
+-->
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Subjects</label>
+          <div class="subjects-container">
+            <div class="subjects-list">
+              <span *ngFor="let subject of newStudent.preferredSubjects" class="subject-tag">
+                {{ subject }}
+                <button type="button" class="remove-btn" (click)="removeSubject(subject)">×</button>
+              </span>
+            </div>
+            <div class="add-subject">
+              <select #subjectSelect class="form-input" (change)="addSubject(subjectSelect.value); subjectSelect.value = ''">
+                <option value="">Add Subject</option>
+                <option *ngFor="let subject of subjectOptions" [value]="subject">{{ subject }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Learning Goals</label>
+          <div class="goals-container">
+            <div class="goals-list">
+              <!--<span *ngFor="let goal of newStudent.learningGoals" class="goal-tag">
+                {{ goal }}
+                <button type="button" class="remove-btn" (click)="removeLearningGoal(goal)">×</button>
+              </span>-->
+            </div>
+            <div class="add-goal">
+              <input type="text" #goalInput placeholder="Add learning goal" class="form-input"
+                     (keyup.enter)="addLearningGoal(goalInput.value); goalInput.value = ''">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Notes</label>
+<!--
+          <textarea [(ngModel)]="newStudent.notes" name="notes" rows="3" class="form-input"></textarea>
+-->
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="!addForm.valid">Add Student</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Student Form -->
+  <div class="form-container" *ngIf="showEditForm">
+    <div class="form-card">
+      <h3>Edit Student: {{ selectedStudent?.firstName }} {{ selectedStudent?.lastName }}</h3>
+      <form (ngSubmit)="updateStudent()" #editForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" [(ngModel)]="newStudent.firstName" name="firstName" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" [(ngModel)]="newStudent.lastName" name="lastName" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" [(ngModel)]="newStudent.email" name="email" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Age *</label>
+            <input type="number" [(ngModel)]="newStudent.age" name="age" min="5" max="100" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Grade *</label>
+            <select [(ngModel)]="newStudent.grade" name="grade" required class="form-input">
+              <option value="">Select Grade</option>
+              <option value="Elementary">Elementary</option>
+              <option value="Middle School">Middle School</option>
+              <option value="High School">High School</option>
+              <option value="College">College</option>
+              <option value="Adult">Adult</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rank *</label>
+            <select [(ngModel)]="newStudent.rank" name="rank" required class="form-input">
+              <option *ngFor="let rank of rankOptions" [value]="rank">{{ rank }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Available Classes</label>
+            <input type="number" [(ngModel)]="newStudent.availableClasses" name="availableClasses" min="0" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select [(ngModel)]="newStudent.status" name="status" class="form-input">
+              <option [value]="StudentStatus.ACTIVE">Active</option>
+              <option [value]="StudentStatus.INACTIVE">Inactive</option>
+              <option [value]="StudentStatus.SUSPENDED">Suspended</option>
+              <option [value]="StudentStatus.GRADUATED">Graduated</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Parent Email</label>
+<!--
+            <input type="email" [(ngModel)]="newStudent.parentEmail" name="parentEmail" class="form-input">
+-->
+          </div>
+          <div class="form-group">
+            <label>Parent Phone</label>
+<!--
+            <input type="tel" [(ngModel)]="newStudent.parentPhone" name="parentPhone" class="form-input">
+-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Emergency Contact</label>
+<!--
+          <input type="tel" [(ngModel)]="newStudent.emergencyContact" name="emergencyContact" class="form-input">
+-->
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Subjects</label>
+          <div class="subjects-container">
+            <div class="subjects-list">
+              <span *ngFor="let subject of newStudent.preferredSubjects" class="subject-tag">
+                {{ subject }}
+                <button type="button" class="remove-btn" (click)="removeSubject(subject)">×</button>
+              </span>
+            </div>
+            <div class="add-subject">
+              <select #subjectSelectEdit class="form-input" (change)="addSubject(subjectSelectEdit.value); subjectSelectEdit.value = ''">
+                <option value="">Add Subject</option>
+                <option *ngFor="let subject of subjectOptions" [value]="subject">{{ subject }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Learning Goals</label>
+          <div class="goals-container">
+            <div class="goals-list">
+             <!-- <span *ngFor="let goal of newStudent.learningGoals" class="goal-tag">
+                {{ goal }}
+                <button type="button" class="remove-btn" (click)="removeLearningGoal(goal)">×</button>
+              </span>-->
+            </div>
+            <div class="add-goal">
+              <input type="text" #goalInputEdit placeholder="Add learning goal" class="form-input"
+                     (keyup.enter)="addLearningGoal(goalInputEdit.value); goalInputEdit.value = ''">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Notes</label>
+<!--
+          <textarea [(ngModel)]="newStudent.notes" name="notes" rows="3" class="form-input"></textarea>
+-->
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="!editForm.valid">Update Student</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Students List -->
+  <div class="students-list" *ngIf="!showAddForm && !showEditForm">
+    <div class="list-header">
+      <span class="results-count">{{ filteredStudents.length }} student(s) found</span>
+    </div>
+
+    <div class="students-table">
+      <div class="table-header">
+        <div class="header-cell">Student</div>
+        <div class="header-cell">Grade & Rank</div>
+        <div class="header-cell">Status</div>
+        <div class="header-cell">Classes</div>
+        <div class="header-cell">Subscription</div>
+        <div class="header-cell">Actions</div>
+      </div>
+
+      <div
+        *ngFor="let student of filteredStudents"
+        class="table-row"
+        (click)="viewStudentDetails(student)"
+        [class.clickable]="true"
+      >
+        <div class="cell student-info-cell">
+          <div class="student-avatar">
+            <img [src]="student.avatar" [alt]="student.firstName" *ngIf="student.avatar">
+            <div class="avatar-placeholder" *ngIf="!student.avatar">
+              {{ student.firstName.charAt(0) }}{{ student.lastName.charAt(0) }}
+            </div>
+          </div>
+          <div class="student-details">
+            <h4 class="student-name">{{ student.firstName }} {{ student.lastName }}</h4>
+            <p class="student-email">{{ student.email }}</p>
+            <p class="student-age">Age: {{ student.age }}</p>
+          </div>
+        </div>
+
+        <div class="cell">
+          <div class="grade-rank">
+            <span class="grade">{{ student.grade }}</span>
+            <span class="rank-badge" [ngClass]="getRankClass(student.rank)">
+              {{ student.rank }}
+            </span>
+          </div>
+        </div>
+
+        <div class="cell">
+          <span class="status-badge" [ngClass]="getStatusClass(student.status)">
+            {{ student.status }}
+          </span>
+        </div>
+
+        <div class="cell">
+          <div class="classes-info">
+            <span class="available">{{ student.availableClasses }} available</span>
+            <span class="attended">{{ student.totalClassesAttended }} attended</span>
+          </div>
+        </div>
+
+        <div class="cell">
+          <div class="subscription-info" *ngIf="student.subscriptionPlan">
+            <span class="plan-name">{{ student.subscriptionPlan.name }}</span>
+            <span class="expiry" *ngIf="student.subscriptionExpiry">
+              Expires: {{ student.subscriptionExpiry }}
+            </span>
+          </div>
+        </div>
+
+        <div class="cell actions-cell" (click)="$event.stopPropagation()">
+          <div class="quick-actions">
+            <button
+              class="btn btn-sm btn-success"
+              (click)="changeStudentStatus(student.id!, StudentStatus.ACTIVE)"
+              *ngIf="student.status !== StudentStatus.ACTIVE"
+              title="Activate Student"
+            >
+              ✓
+            </button>
+            <button
+              class="btn btn-sm btn-warning"
+              (click)="changeStudentStatus(student.id!, StudentStatus.INACTIVE)"
+              *ngIf="student.status === StudentStatus.ACTIVE"
+              title="Deactivate Student"
+            >
+              ⏸️
+            </button>
+            <button
+              class="btn btn-sm btn-danger"
+              (click)="changeStudentStatus(student.id!, StudentStatus.SUSPENDED)"
+              *ngIf="student.status !== StudentStatus.SUSPENDED"
+              title="Suspend Student"
+            >
+              ⚠️
+            </button>
+            <button
+              class="btn btn-sm btn-info"
+              (click)="changeStudentStatus(student.id!, StudentStatus.GRADUATED)"
+              *ngIf="student.status !== StudentStatus.GRADUATED"
+              title="Mark as Graduated"
+            >
+              🎓
+            </button>
+          </div>
+
+          <div class="edit-actions">
+            <button class="btn btn-sm btn-primary" (click)="editStudent(student)" title="Edit Student">
+              ✏️
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteStudent(student.id!)" title="Delete Student">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" *ngIf="filteredStudents.length === 0">
+      <p>No students found matching your criteria.</p>
+    </div>
+  </div>
+
+  <!-- Student Details View -->
+  <div class="student-details-view" *ngIf="selectedStudentForView && !showAddForm && !showEditForm">
+    <div class="details-header">
+      <button class="btn btn-secondary back-btn" (click)="backToList()">
+        ← Back to List
+      </button>
+      <h2>Student Details: {{ selectedStudentForView.firstName }} {{ selectedStudentForView.lastName }}</h2>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="editStudent(selectedStudentForView)">
+          ✏️ Edit Student
+        </button>
+      </div>
+    </div>
+
+    <div class="details-content">
+      <div class="student-profile">
+        <div class="profile-header">
+          <div class="student-avatar-large">
+            <img [src]="selectedStudentForView.avatar" [alt]="selectedStudentForView.firstName" *ngIf="selectedStudentForView.avatar">
+            <div class="avatar-placeholder-large" *ngIf="!selectedStudentForView.avatar">
+              {{ selectedStudentForView.firstName.charAt(0) }}{{ selectedStudentForView.lastName.charAt(0) }}
+            </div>
+          </div>
+          <div class="profile-info">
+            <h1 class="student-name-large">{{ selectedStudentForView.firstName }} {{ selectedStudentForView.lastName }}</h1>
+            <p class="student-email-large">{{ selectedStudentForView.email }}</p>
+            <div class="status-rank-info">
+              <span class="status-badge-large" [ngClass]="getStatusClass(selectedStudentForView.status)">
+                {{ selectedStudentForView.status }}
+              </span>
+              <span class="rank-badge-large" [ngClass]="getRankClass(selectedStudentForView.rank)">
+                {{ selectedStudentForView.rank }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-section">
+          <h3>Personal Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Age:</label>
+              <span>{{ selectedStudentForView.age }}</span>
+            </div>
+            <div class="info-item">
+              <label>Grade:</label>
+              <span>{{ selectedStudentForView.grade }}</span>
+            </div>
+            <div class="info-item">
+              <label>Rank:</label>
+              <span>{{ selectedStudentForView.rank }}</span>
+            </div>
+            <div class="info-item">
+              <label>Join Date:</label>
+              <span>{{ selectedStudentForView.joinDate }}</span>
+            </div>
+            <div class="info-item" *ngIf="selectedStudentForView.lastActiveDate">
+              <label>Last Active:</label>
+              <span>{{ selectedStudentForView.lastActiveDate }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Academic Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number">{{ selectedStudentForView.availableClasses }}</div>
+              <div class="stat-label">Available Classes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">{{ selectedStudentForView.totalClassesAttended }}</div>
+              <div class="stat-label">Classes Attended</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">{{ selectedStudentForView.totalClassesBooked }}</div>
+              <div class="stat-label">Classes Booked</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="selectedStudentForView.subscriptionPlan">
+          <h3>Subscription Information</h3>
+          <div class="subscription-details">
+            <div class="info-item">
+              <label>Plan:</label>
+              <span>{{ selectedStudentForView.subscriptionPlan.name }}</span>
+            </div>
+            <div class="info-item" *ngIf="selectedStudentForView.subscriptionExpiry">
+              <label>Expiry Date:</label>
+              <span>{{ selectedStudentForView.subscriptionExpiry }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section" *ngIf="selectedStudentForView.preferredSubjects && selectedStudentForView.preferredSubjects.length > 0">
+          <h3>Preferred Subjects</h3>
+          <div class="subjects-tags-large">
+            <span class="subject-tag-large" *ngFor="let subject of selectedStudentForView.preferredSubjects">
+              {{ subject }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Status Management</h3>
+          <div class="status-actions-large">
+            <button
+              class="btn btn-success"
+              (click)="changeStudentStatus(selectedStudentForView.id!, StudentStatus.ACTIVE)"
+              *ngIf="selectedStudentForView.status !== StudentStatus.ACTIVE"
+            >
+              ✓ Activate Student
+            </button>
+            <button
+              class="btn btn-warning"
+              (click)="changeStudentStatus(selectedStudentForView.id!, StudentStatus.INACTIVE)"
+              *ngIf="selectedStudentForView.status === StudentStatus.ACTIVE"
+            >
+              ⏸️ Deactivate Student
+            </button>
+            <button
+              class="btn btn-danger"
+              (click)="changeStudentStatus(selectedStudentForView.id!, StudentStatus.SUSPENDED)"
+              *ngIf="selectedStudentForView.status !== StudentStatus.SUSPENDED"
+            >
+              ⚠️ Suspend Student
+            </button>
+            <button
+              class="btn btn-info"
+              (click)="changeStudentStatus(selectedStudentForView.id!, StudentStatus.GRADUATED)"
+              *ngIf="selectedStudentForView.status !== StudentStatus.GRADUATED"
+            >
+              🎓 Mark as Graduated
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

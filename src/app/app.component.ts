@@ -8,7 +8,6 @@ import {DataClassService} from './services/data-class.service';
 import {IClass} from '../shared/interfaces/iClass';
 import {AuthService} from './services/auth.service';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
-import {ApiPath} from '../shared/constants/api-path';
 import {sidebarItems} from '../shared/constants/sidebarItems';
 
 @Component({
@@ -38,14 +37,14 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.users$ = this.userService.getUsers();
+    /*this.users$ = this.userService.getUsers();*/
     this.activeRoute = this.router.url;
-    if(this.authService.currentUser?.isAdmin){
+    if(this.authService.currentUser?.roles.includes('Teacher')){
         this.menuItems = sidebarItems.filter(item=> item.role === 'ADMIN')
-    } else if(this.authService.currentUser?.isStudent){
+    } else if(this.authService.currentUser?.roles.includes('Pupil')){
       this.menuItems = sidebarItems.filter(item=> item.role === 'STUDENT')
-    }else if(this.authService.currentUser?.isTeacher){
-      this.menuItems = sidebarItems.filter(item=> item.role === 'TEACHER')
+    }else if(this.authService.currentUser?.roles.includes('Admin')){
+      this.menuItems = sidebarItems.filter(item=> item.role === 'ADMIN')
     }
   }
 }

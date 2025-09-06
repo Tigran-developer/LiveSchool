@@ -73,100 +73,10 @@
     <app-teacher-management *ngIf="isTeachersRoute"></app-teacher-management>
 
     <!-- Students Management -->
-    <div *ngIf="isStudentsRoute" class="students-management fade-in">
-      <h2>Student Management</h2>
-      <p>Student management functionality coming soon...</p>
-    </div>
+    <app-student-management *ngIf="isStudentsRoute"></app-student-management>
 
-    <!-- Create Class Form -->
-    <div *ngIf="isClassesRoute" class="create-class fade-in">
-      <h2>Manage Classes</h2>
-
-      <div class="create-class-form card">
-        <h3>Create New Class</h3>
-        <form (ngSubmit)="createClass()" #classForm="ngForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Class Title</label>
-              <input type="text" class="form-input" [(ngModel)]="newClass.title" name="title" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Teacher</label>
-              <select class="form-select" [(ngModel)]="newClass.teacherId" name="teacherId" required>
-                <option value="">Select Teacher</option>
-                <option value="2">Emily Rodriguez</option>
-                <option value="3">Michael Chen</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Description</label>
-            <textarea class="form-input" [(ngModel)]="newClass.description" name="description" rows="3"></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Date</label>
-              <input type="datetime-local" class="form-input" [(ngModel)]="newClass.date" name="date" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Duration (minutes)</label>
-              <input type="number" class="form-input" [(ngModel)]="newClass.duration" name="duration" min="15" max="180"
-                     required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Zoom Link</label>
-              <input type="url" class="form-input" [(ngModel)]="newClass.zoomLink" name="zoomLink" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Recurring</label>
-              <select class="form-select" [(ngModel)]="newClass.recurring" name="recurring">
-                <option value="none">None</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary" [disabled]="!classForm.valid">
-            Create Class
-          </button>
-        </form>
-      </div>
-
-      <div class="classes-list">
-        <h3>Scheduled Classes</h3>
-        <div class="classes-table">
-          <div class="table-header">
-            <div>Title</div>
-            <div>Teacher</div>
-            <div>Date & Time</div>
-            <div>Duration</div>
-            <div>Status</div>
-            <div>Actions</div>
-          </div>
-          <div *ngFor="let item of classes" class="table-row">
-            <div class="class-title">{{ item.title }}</div>
-            <div>{{ item.teacher.firstName + ' ' + item.teacher.lastName }}</div>
-            <div>{{ formatDateTime(item.startTime) }}</div>
-            <div>{{ item.durationInMinutes }}min</div>
-            <div>
-                    <span class="status-badge" [ngClass]="'status-' + item.status">
-                      {{ item.status }}
-                    </span>
-            </div>
-            <div class="table-actions">
-              <button class="btn-icon edit" title="Edit">✏️</button>
-              <button class="btn-icon delete" (click)="deleteClass(item.id)" title="Delete">🗑️</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Classes Management -->
+    <app-classes-management *ngIf="isClassesRoute"></app-classes-management>
 
     <!-- Subscription Plans -->
     <div *ngIf="isPlansRoute" class="subscription-plans fade-in">

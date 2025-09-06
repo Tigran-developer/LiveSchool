@@ -23,7 +23,7 @@ export const routes: Routes = [
   {path: 'teacher', component: TeacherDashboardComponent},
   {path: 'teacher/:section', component: TeacherDashboardComponent},
   {
-    path: 'pupil', component: StudentDashboardComponent,children: [
+    path: 'student', component: StudentDashboardComponent,children: [
       {path: 'classes', component: AllClassesComponent},
       {path: 'booked_classes', component: BookedClassesComponent},
       {path: 'browse_classes', component: AllClassesComponent},

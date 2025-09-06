@@ -18,12 +18,7 @@ export class DataClassService {
   }
 
   getAllClasses(): Observable<IClassDetails[] | null> {
-    const studentId = this.authService.currentUser?.id;
-    if (!studentId) {
-      return EMPTY;
-    }
-    const params = new HttpParams().set(ParamKeys.userId, studentId)
-    return this.http.get<IClassDetails[]>(ApiPath.classes + ApiPath.browse_classes, {params}).pipe(
+    return this.http.get<IClassDetails[]>(ApiPath.classes + ApiPath.browse_classes, {withCredentials: true}).pipe(
       map(classes => {
         return classes.map(item => {
           return {
@@ -39,9 +34,8 @@ export class DataClassService {
     )
   }
 
-  getBookedClasses(studentId: string): Observable<IClassDetails[] | null> {
-    const params = new HttpParams().set(ParamKeys.studentId, studentId);
-    return this.http.get<IClassDetails[]>(`${ApiPath.classes}${ApiPath.booked_classes}`, { params }).pipe(
+  getBookedClasses(): Observable<IClassDetails[] | null> {
+    return this.http.get<IClassDetails[]>(ApiPath.classes + ApiPath.booked_classes, {withCredentials: true}).pipe(
       map(classes => {
         return classes.map(item => {
           return {
@@ -51,7 +45,7 @@ export class DataClassService {
         });
       }),
       catchError(err => {
-        console.error('Error fetching classes for student with id => ', studentId, err);
+        console.error('Error fetching classes: ', err);
         return EMPTY;
       })
     )

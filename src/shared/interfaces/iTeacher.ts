@@ -1,12 +1,18 @@
-import {IUser} from './iUser';
-import {TeacherStatus} from '../constants/TeacherStatus';
+import { IUser } from './iUser';
 
 export interface ITeacher extends IUser {
-  isTeacher: true;
-  specialization: string;
-  experience: number;
-  hourlyRate: number;
-  status: TeacherStatus;
+  // Backend model fields
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  roles: string[];
+  
+  // Frontend-specific properties (optional)
+  specialization?: string;
+  experience?: number;
+  hourlyRate?: number;
   bio?: string;
   subjects?: string[];
   totalClasses?: number;

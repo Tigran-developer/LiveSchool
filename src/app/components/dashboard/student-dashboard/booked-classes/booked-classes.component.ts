@@ -9,7 +9,6 @@ import {LucideAngularModule} from 'lucide-angular';
 import {FormsModule} from '@angular/forms';
 import {StudentService} from '../../../../services/student.service';
 import {IStudent} from '../../../../../shared/interfaces/iStudent';
-import {ClassStatus} from '../../../../../shared/constants/ClassStatus';
 
 @Component({
   selector: 'app-booked-classes',
@@ -44,28 +43,19 @@ export class BookedClassesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const userId = this.authService.currentUser?.id
-    if (userId) {
-      this.studentService.getStudentByUserId(userId).pipe(
-        takeUntil(this.destroy$),
-        switchMap((student: IStudent | null) => {
-          if (!student?.id) return EMPTY;
+    this.dataClassService.getBookedClasses().pipe(
+      tap(classes => {
+        if(!classes) classes = [];
 
-          return this.dataClassService.getBookedClasses(student.id).pipe(
-            tap(classes => {
-              if(!classes) classes = [];
+        const upcoming = classes.filter(c => c.status === 'upcoming');
+        const completed = classes.filter(c => c.status === 'completed');
+        const canceled = classes.filter(c => c.status === 'cancelled');
 
-              const upcoming = classes.filter(c => c.status.id.toUpperCase() === ClassStatus.UPCOMING);
-              const completed = classes.filter(c => c.status.id.toUpperCase() === ClassStatus.COMPLETED);
-              const canceled = classes.filter(c => c.status.id.toUpperCase() === ClassStatus.CANCELLED);
-
-              this.upcomingClasses = upcoming;
-              this.completedClasses = completed;
-              this.availableClasses = canceled;
-            })
-          );
-        })
-      ).subscribe();
-    }
+        this.upcomingClasses = upcoming;
+        this.completedClasses = completed;
+        this.availableClasses = canceled;
+      })
+    ).subscribe();
 
     this.activeRoute = this.route?.routeConfig?.path
     this.nextClass = this.upcomingClasses

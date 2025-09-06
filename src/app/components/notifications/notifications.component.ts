@@ -21,12 +21,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.dataService.notifications$.pipe(
+   /* this.dataService.notifications$.pipe(
         takeUntil(this.destroy$)
     ).subscribe(notifications => {
           this.notifications = notifications;
           this.unreadCount = notifications.filter(n => !n.read).length;
-        });
+        });*/
   }
 
   toggleDropdown(): void {
@@ -34,7 +34,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   markAsRead(notificationId: number): void {
-    this.dataService.markNotificationAsRead(notificationId);
+   /* this.dataService.markNotificationAsRead(notificationId);*/
   }
 
   formatTime(date: Date): string {

@@ -11,7 +11,6 @@ import {IMenuItem} from '../../../../shared/interfaces/iMenu-item';
 import {ICurrentUser} from '../../../../shared/interfaces/iCurrent-user';
 import {AuthService} from '../../../services/auth.service';
 import { environment } from '../../../../enviroments/environment';
-import {MENU_ITEMS} from '../../../../shared/constants/menu-bar-items';
 
 @Component({
   selector: 'menu-bar',
@@ -69,8 +68,6 @@ export class MenuBarComponent {
   }
 
   ngOnInit(): void {
-    this.barList = this.allowedBarItems();
-    this.filteredBarList = this.allowedBarItems();
     this.currentUser = this.authService.currentUser;
     this.routeChangeListener();
     this.filterBarItemsListener();
@@ -127,23 +124,6 @@ export class MenuBarComponent {
         }
       })
     ).subscribe();
-  }
-
-  private allowedBarItems(): IMenuItem[] {
-    const allowedComponents = new Set(
-      /*this.authService.currentUser?.components.map((item) => item.uiName)*/
-    );
-
-    return MENU_ITEMS.filter((item) => {
-      if (item.children) {
-        item.children = item.children.filter((child) =>
-          child.uiNames?.some((name) => allowedComponents.has(name))
-        );
-        return item.children.length > 0;
-      } else {
-        return item.uiNames?.some((name) => allowedComponents.has(name));
-      }
-    });
   }
 
   private filterBarItemsListener() {

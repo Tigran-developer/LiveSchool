@@ -1,4 +1,4 @@
 export interface ISimplePrivateUser {
-  FirstName: string
-  LastName: string
+  firstName: string;
+  lastName: string;
 }

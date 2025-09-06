@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectorRef} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {map} from 'rxjs';
@@ -28,17 +28,30 @@ export class ResetPasswordComponent {
   isLoading = false;
   isSubmitted = false;
   errorMessage = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.resetForm = this.fb.group({
       password: ['', [Validators.required, Validators.pattern(Patterns.password)]],
       confirmPassword: ['', [Validators.required]]
     },{ validators: passwordMatchValidator, updateOn: "blur"});
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.cdr.detectChanges();
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+    this.cdr.detectChanges();
   }
 
   onSubmit(): void {

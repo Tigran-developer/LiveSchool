@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {TranslatePipe} from '@ngx-translate/core';
 import {CommonModule} from '@angular/common';
-import {catchError, filter, of, Subject, switchMap, takeUntil, tap} from 'rxjs';
+import {catchError, filter, map, of, Subject, switchMap, takeUntil, tap} from 'rxjs';
 import {AuthService} from '../../../services/auth.service';
 import {Patterns} from '../../../../shared/constants/patterns';
 import {URequiredDirective} from '../../../../shared/directives/u-required.directive';
@@ -29,6 +29,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
 
   submit$ = new Subject<void>();
   destroy$ = new Subject<void>();
@@ -50,14 +51,22 @@ export class LoginComponent {
     const email = this.activatedRoute.snapshot.queryParamMap.get('email');
     const token = this.activatedRoute.snapshot.queryParamMap.get('token');
     if (email && token) {
-      this.authService.confirmEmail(email, token).subscribe()
+      this.authService.confirmEmail(email, token).pipe(
+        takeUntil(this.destroy$),
+        tap(()=>{
+        })
+      ).subscribe()
     }
     this.submitListener();
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.cdr.detectChanges();
+  }
+
   submitListener(): void {
-    this.submit$
-      .pipe(
+    this.submit$ .pipe(
         takeUntil(this.destroy$),
         filter(() => this.loginForm.valid),
         tap(() => {
@@ -69,12 +78,12 @@ export class LoginComponent {
             tap(response => {
               this.isLoading = false;
               if (response.success) {
-                if(this.authService.currentUser?.isTeacher){
+                if(this.authService.currentUser?.roles.includes('Teacher')){
                   this.router.navigate([ApiPath.teacher+'classes']);
-                }else if(this.authService.currentUser?.isStudent) {
+                }else if(this.authService.currentUser?.roles.includes('Pupil')) {
                   this.router.navigate([ApiPath.student+'/booked_classes']);
                 }
-                else if(this.authService.currentUser?.isAdmin) {
+                else if(this.authService.currentUser?.roles.includes('Admin')) {
                   this.router.navigate([ApiPath.admin]);
                 }
               } else {

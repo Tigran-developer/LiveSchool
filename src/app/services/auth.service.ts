@@ -32,10 +32,10 @@ export class AuthService {
   }
 
   register(user: IRegisterUser): Observable<IResponse> {
-   user.clientUrl = window.location.origin + ApiPath.authenticate
+    user.clientUrl = window.location.origin + ApiPath.authenticate
 
-    return this.http.post(ApiPath.auth+ApiPath.register, user).pipe(
-      map(res=>{
+    return this.http.post(ApiPath.auth + ApiPath.register, user).pipe(
+      map(res => {
         return {success: true, message: 'SUCCESSFULLY_REGISTERED'};
       }),
       catchError(error => {
@@ -46,8 +46,8 @@ export class AuthService {
 
   login(login: { email: string, password: string }): Observable<{ success: boolean, message?: string }> {
     const body = {
-      EmailPhone: login.email,
-      Password: login.password
+      emailPhone: login.email,
+      password: login.password
     }
     return this.http.post<ICurrentUser>(ApiPath.auth + ApiPath.authenticate, body, {withCredentials: true}).pipe(
       map((user) => {
@@ -56,7 +56,7 @@ export class AuthService {
         return {success: true};
       }),
       catchError(res => {
-        if(res.error === 'Email not confirmed.'){
+        if (res.error === 'Email not confirmed.') {
           return of({success: false, message: 'CONFIRM_EMAIL'})
         }
         return of({success: false});
@@ -67,9 +67,10 @@ export class AuthService {
   forgotPassword(email: string): Observable<IResponse> {
     const url = window.location.origin + ApiPath.reset_password
     const body = {
-      Email: email,
-      ClientUrl: url};
-    return this.http.post<IResponse>(ApiPath.auth+ApiPath.forgot_password, body).pipe(
+      email: email,
+      clientUrl: url
+    };
+    return this.http.post<IResponse>(ApiPath.auth + ApiPath.forgot_password, body).pipe(
       catchError(error => {
         return of({success: false, message: 'ERROR_TRY_AGAIN'});
       })
@@ -77,13 +78,13 @@ export class AuthService {
   }
 
   resetPassword(email?: string, token?: string, password?: string, confirmPassword?: string): Observable<IResponse> {
-    if(!email || !password || !confirmPassword || !password) {
+    if (!email || !password || !confirmPassword || !password) {
       return of({success: false, message: 'ERROR_TRY_AGAIN'});
     }
     const body = {
       password, confirmPassword, email, token
     }
-    return this.http.post<IResponse>(ApiPath.auth+ApiPath.reset_password, body, {withCredentials: true}).pipe(
+    return this.http.post<IResponse>(ApiPath.auth + ApiPath.reset_password, body, {withCredentials: true}).pipe(
       catchError(error => {
         return of({success: false, message: 'ERROR_TRY_AGAIN'});
       })
@@ -92,16 +93,15 @@ export class AuthService {
 
   confirmEmail(email: string, token: string): Observable<IResponse> {
     return this.http.get<IResponse>(ApiPath.auth + ApiPath.confirm_email, {
-      params: { email, token }
+      params: {email, token}
     }).pipe(catchError(error => {
       return of({success: false, message: 'ERROR_TRY_AGAIN'});
     }));
   }
 
-
   logout() {
     this.http
-      .post<ICurrentUser>(ApiPath.auth+ApiPath.logout, {})
+      .post<ICurrentUser>(ApiPath.auth + ApiPath.logout, {})
       .subscribe((res) => {
         this.clearSession();
         this.isLoggedIn$.next(false);
@@ -110,6 +110,7 @@ export class AuthService {
 
   private clearSession(): void {
     localStorage.removeItem(this.userStorageKey);
+    this._currentUser = null;
     this.isLoggedIn$.next(false);
   }
 
@@ -118,34 +119,52 @@ export class AuthService {
     if (storedUser) {
       this._currentUser = JSON.parse(storedUser);
       this.isLoggedIn$.next(true);
-/*      if (!this._currentUser?.isTeacher) {
-        this.router.navigate(['pupil/booked-classes'])
-      }*/
     }
   }
 
-  //TMP
+  // Helper methods for role checking
+  hasRole(role: string): boolean {
+    return this.currentUser?.roles.includes(role) || false;
+  }
+
+  hasAnyRole(roles: string[]): boolean {
+    return this.currentUser?.roles.some(role => roles.includes(role)) || false;
+  }
+
+  isAdmin(): boolean {
+    return this.hasRole('Admin');
+  }
+
+  isTeacher(): boolean {
+    return this.hasRole('Teacher');
+  }
+
+  isStudent(): boolean {
+    return this.hasRole('Pupil');
+  }
+
+  //TMP - Updated to use new role system
   switchRole(role: 'admin' | 'teacher' | 'pupil'): void {
     const currentUser = this.currentUser;
     if (currentUser) {
       const mockUsers = {
         admin: {
           ...currentUser,
-          role: 'admin',
-          name: 'Admin User',
-          email: 'admin@platform.com'
+          roles: ['Admin'],
+          firstName: 'Admin',
+          lastName: 'User'
         },
         teacher: {
           ...currentUser,
-          role: 'teacher',
-          name: 'John Smith',
-          email: 'john@platform.com'
+          roles: ['Teacher'],
+          firstName: 'John',
+          lastName: 'Smith'
         },
         pupil: {
           ...currentUser,
-          role: 'pupil',
-          name: 'Sarah Johnson',
-          email: 'sarah@platform.com'
+          roles: ['Pupil'],
+          firstName: 'Sarah',
+          lastName: 'Johnson'
         }
       };
       this.currentUser = (mockUsers[role]);

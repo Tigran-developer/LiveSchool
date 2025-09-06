@@ -26,6 +26,7 @@ export class TeacherManagementComponent implements OnInit {
   showAddForm = false;
   showEditForm = false;
   selectedTeacher: ITeacher | null = null;
+  selectedTeacherForView: ITeacher | null = null;
 
   newTeacher: Partial<ITeacher> = {
     firstName: '',
@@ -199,6 +200,14 @@ export class TeacherManagementComponent implements OnInit {
       teacher.status = newStatus;
       this.filterTeachers();
     }
+  }
+
+  viewTeacherDetails(teacher: ITeacher): void {
+    this.selectedTeacherForView = teacher;
+  }
+
+  backToList(): void {
+    this.selectedTeacherForView = null;
   }
 
   private validateTeacherForm(): boolean {
